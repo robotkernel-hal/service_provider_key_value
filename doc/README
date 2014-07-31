@@ -1,0 +1,132 @@
+sercos master process data handling module
+
+1. module configuration
+
+config:
+  ifname: /dev/sercos0
+  cmd_mode: automatic
+  baudrate: 8
+  cycletime: 1000
+  sync: 1
+  maxatcount: 7
+  masterclock: 32
+  presync: 0
+  loglevel: 3
+  prio: 90
+  affinity: 0 
+  init_cmds:
+  - idn: 371
+    element: 0x80
+    data: 0008 0016 8114 811C 8128 8148
+    desc: at data container
+  - idn: 16
+    element: 0x80
+    data: 0008 0014 0033 0054 0035 016C
+    desc: at mapping (motor pos, poti pos, actual torque, at data container)
+  - idn: 24
+    element: 0x80
+    data: 0012 0014 002F 0024 0050 8100 8101 8102 8103 8104 8105
+    desc: mdt mapping (desired pos, feed-forward torque, desired torque, zr 1-6)
+  - idn: 32
+    element: 0x80
+    data: 0003
+    desc: primary opmode (position control)
+  - idn: 33
+    element: 0x80
+    data: 0001
+    desc: secondary opmode 1 (torque control)
+  - idn: 34
+    element: 0x80
+    data: 0002
+    desc: secondary opmode 2 (speed control)
+  - idn: 35
+    element: 0x80
+    data: 0000
+    desc: secondary opmode 3 (no control)
+  - idn: 284
+    element: 0x80
+    data: 8001
+    desc: secondary opmode 4 (state-feedback control)
+  - idn: 33094
+    element: 0x80
+    data: 0001
+    desc: steuerungsversion
+  - idn: 33075
+    element: 0x80
+    data: 0001
+    desc: testbetrieb, controller umschalten in power on
+  drives: 
+  - at_address: 1
+  - at_address: 2
+  - at_address: 3
+  - at_address: 4
+  - at_address: 5
+  - at_address: 6
+  - at_address: 7
+
+2. process data for lnrk
+
+- name: lwr joint
+  class parameters:
+  - name: sercos_module
+  - name: drive_index
+  type: pd_mapping
+  pd_module: "%(sercos_module)"
+  pd_offset: "%(drive_index)" 
+  measurements:
+  - uint16_t: state
+    string_format: "0x%04x"
+  - int32_t: motor_pos
+    map_factor: 1.7453292519943295e-08 # int * <2 * pi / 360000000>
+    map_type: float
+    unit: rad
+  - int16_t: torque
+    map_factor: 0.01 # int * <1 / 100>
+    map_type: float
+    unit: Nm
+  - int32_t: poti_pos
+    map_factor: 1.7453292519943295e-08 # int * <2 * pi / 360000000>
+    map_type: float
+    unit: rad
+  - int32_t: datacontainer
+    string_format: "0x%08x"
+  commands:
+  - uint16_t: control
+    default_value: 0
+    string_format: "0x%04x"
+  - int32_t: desired_pos
+    map_factor: 1.7453292519943295e-08 # int * <2 * pi / 360000000>
+    map_type: float
+    unit: rad
+  - int32_t: speed
+    default_value: 0
+  - int16_t: torque
+    map_factor: 0.01
+    map_type: float
+    default_value: 0
+    unit: Nm
+  - uint16_t: zr_kd
+    map_factor: 0.1563
+    map_type: float
+    default_value: 0
+  - uint16_t: zr_kp
+    map_factor: 1.0000
+    map_type: float
+    default_value: 0
+  - uint16_t: zr_ks
+    map_factor: 0.0003
+    map_type: float
+    default_value: 0
+  - uint16_t: zr_kt
+    map_factor: 0.0010
+    map_type: float
+    default_value: 0
+  - uint16_t: zr_c1
+    map_factor: 0.1000
+    map_type: float
+    default_value: 0
+  - uint16_t: zr_c2
+    map_factor: 4.6875
+    map_type: float
+    default_value: 0
+

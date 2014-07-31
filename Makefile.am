@@ -1,4 +1,6 @@
-libdir = $(prefix)/lib/robotkernel/interfaces
+ACLOCAL_AMFLAGS = -I m4 
+
+libdir = $(prefix)/lib
 lib_LTLIBRARIES = libinterface_key_value.la
 BUILT_SOURCES = ln_messages.h
 CLEANFILES = ln_messages.h
