@@ -1,0 +1,9 @@
+service
+
+response
+char* error_message
+
+uint32_t* keys
+define string as "string"
+string* names
+
