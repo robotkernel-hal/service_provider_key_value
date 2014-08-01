@@ -25,12 +25,12 @@
 #ifndef __INTERFACE_KEY_VALUE_H__
 #define __INTERFACE_KEY_VALUE_H__
 
-#include "kernel.h"
-#include "module.h"
-#include "interface_intf.h"
+#include "robotkernel/kernel.h"
+#include "robotkernel/module.h"
+#include "robotkernel/interface_intf.h"
 
 #define LN_UNREGISTER_SERVICE_IN_BASE_DETOR  
-#include "interfaces/key_value/ln_messages.h"
+#include "ln_messages.h"
 #undef LN_UNREGISTER_SERVICE_IN_BASE_DETOR
 
 #include <list>

@@ -24,7 +24,7 @@
 
 #include "interface_key_value.h"
 #include "config.h"
-#include "exceptions.h"
+#include "robotkernel/exceptions.h"
 
 #include <string_util/string_util.h>
 
