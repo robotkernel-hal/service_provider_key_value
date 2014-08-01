@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.63])
-AC_INIT([module_sercos], [1.0.0], [robert.burger@dlr.de])
+AC_INIT([interface_key_value], [1.0.0], [robert.burger@dlr.de])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
@@ -43,6 +43,30 @@ AC_SUBST(SET_MAKE)
 # setup rmpm
 RMPM_ARCH
 
+# try to automatically find ln
+LN_GENERATE_ARGS='-md_dir $(srcdir)/message_definitions'
+if test -n "${LN_BASE}"; then
+    AC_CHECK_HEADER(${LN_BASE}/include/ln.h, [ 
+            # found it in release dir!
+            LN_LIBS="-L${LN_BASE}/lib/$rmpm_host -lln"
+            LN_CFLAGS="-I${LN_BASE}/include/"
+            LN_GENERATE="env -i ${LN_BASE}/scripts/ln_generate $LN_GENERATE_ARGS"
+            LN_YAMLCPP_LIBS="-L${LN_BASE}/lib/$rmpm_host -lyaml-cpp"
+            STRING_UTILS_LIBS="-L$LN_BASE/lib/$rmpm_host -lstring_util"
+        ], [
+            # not found...
+            AC_CHECK_HEADER(${LN_BASE}/library/include/ln.h, [
+                    # found it in source dir!
+                    LN_LIBS="-L${LN_BASE}/library/obj/$rmpm_host -lln"
+                    LN_CFLAGS="-I${LN_BASE}/library/include/ -I${LN_BASE}/contrib/libstring_util/include"
+                    LN_GENERATE="env -i ${LN_BASE}/library/tools/ln_generate $LN_GENERATE_ARGS"
+                    LN_YAMLCPP_CFLAGS="-I${LN_BASE}/contrib/libyaml/include"
+                    LN_YAMLCPP_LIBS="-L${LN_BASE}/contrib/libyaml/lib/$rmpm_host -lyaml-cpp"
+                    STRING_UTILS_LIBS="-L$LN_BASE/contrib/libstring_util/obj/$rmpm_host -lstring_util"
+                ])
+        ])
+fi
+
 # try to find ln via pkg-config and rmpm, if not already done in above step
 PKG_CHECK_MODULES([LN], [libln], [], [
                     RMPM_CHECK_MODULES([LN], [software.links_and_nodes])
@@ -54,17 +78,6 @@ PKG_CHECK_MODULES([ROBOTKERNEL], [robotkernel], [], [
                    ])
 PKG_CHECK_MODULES([YAMLCPP], [yaml-cpp], [], [
                    RMPM_CHECK_MODULES([YAMLCPP], [software.yaml-cpp])])
-
-
-# sercos master library (userlevel version)
-AC_ARG_WITH([sercos],
-            [AS_HELP_STRING([--without-sercos],
-                            [disable support for libsercos master])],
-                            [with_sercos=no],
-                            [with_sercos=yes])
-AS_IF([test "x$with_sercos" != xno], 
-      [ PKG_CHECK_MODULES([SERCOS], [libsercos], [], [RMPM_CHECK_MODULES([SERCOS], [software.libsercos])]) ])
-AM_CONDITIONAL([HAVE_SERCOS], [test -n "$SERCOS_LIBS"])
 
 AC_DEFINE_UNQUOTED(BUILD_DATE,"`date -u`",[Date (usually date of extraction from SVN).])
 AC_DEFINE_UNQUOTED(BUILD_USER,"`whoami`",[User (usually user logged in on shell).])
