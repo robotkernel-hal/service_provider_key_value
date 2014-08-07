@@ -23,8 +23,15 @@
  */
 
 #include "interface_key_value.h"
-#include "config.h"
 #include "robotkernel/exceptions.h"
+#undef BUILD_DATE
+#undef PACKAGE
+#undef PACKAGE_NAME
+#undef PACKAGE_STRING
+#undef PACKAGE_TARNAME
+#undef PACKAGE_VERSION
+#undef VERSION
+#include "config.h"
 
 #include <string_util/string_util.h>
 
