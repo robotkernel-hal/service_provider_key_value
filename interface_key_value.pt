@@ -1,6 +1,6 @@
 PTVERSION           = 2
 NAME                = interface_key_value
-VERSION             = 3.0.2
+VERSION             = 3.0.3
 DESCRIPTION         = robotkernel process data inspection interface
 MAINTAINER          = Robert Burger <robert.burger@dlr.de>
 DOCUMENTATION       = https://rmintra01.robotic.dlr.de/wiki/robotkernel/interface_process_data_inspection

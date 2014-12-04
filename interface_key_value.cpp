@@ -239,8 +239,7 @@ extern "C" {
 INTERFACE_HANDLE intf_register(const char *mod_name, const char *dev_name, int slave_id) {
     key_value *s = NULL;
 
-    klog(info, INTFNAME "%s: build by: " BUILD_USER "@" BUILD_HOST "\n", mod_name);
-    klog(info, INTFNAME "%s: build date: " BUILD_DATE "\n", mod_name);
+    klog(info, INTFNAME "%s: build by: " BUILD_USER "@" BUILD_HOST " date " BUILD_DATE "\n", mod_name);
 
     // parsing sercos ring configuration
     try {

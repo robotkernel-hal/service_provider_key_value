@@ -51,7 +51,7 @@ AC_SUBST(ARCH_CFLAGS)
 PKG_CHECK_MODULES([ROBOTKERNEL], [robotkernel], [], [
                     RMPM_CHECK_MODULES([ROBOTKERNEL], [robotkernel.robotkernel])
                    ])
-LN_BASE=$(env -i "$srcdir"/scripts/get_ln_base.py $ROBOTKERNEL_DEPENDS)
+LN_BASE=$(env -i LN_BASE=$LN_BASE "$srcdir"/scripts/get_ln_base.py $ROBOTKERNEL_DEPENDS)
 LN_GENERATE_ARGS='-md_dir $(srcdir)/message_definitions'
 LN_GENERATE="env -i $LN_BASE/scripts/ln_generate $LN_GENERATE_ARGS"
 
@@ -61,6 +61,20 @@ AC_SUBST(LN_GENERATE)
 AC_DEFINE_UNQUOTED(BUILD_DATE,"`date -u`",[Date (usually date of extraction from SVN).])
 AC_DEFINE_UNQUOTED(BUILD_USER,"`whoami`",[User (usually user logged in on shell).])
 AC_DEFINE_UNQUOTED(BUILD_HOST,"`hostname`",[Hostname (build host).])
+
+AC_ARG_WITH([debug],
+            [AS_HELP_STRING([--with-debug],
+                            [enable support for debug build])],
+                            [with_debug=yes],
+                            [with_debug=no])
+
+CFLAGS="-Wall"
+CXXFLAGS="-Wall"
+
+AS_IF([test "x$with_debug" != xno], [ 
+       CFLAGS="-Wall -g3 -O0"
+       CXXFLAGS="-Wall -g3 -O0" ])
+
 
 # Checks for header files.
 AC_CHECK_HEADERS([stdlib.h string.h])
