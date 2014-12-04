@@ -98,7 +98,7 @@ int key_value::on_read(ln::service_request& req, ln_service_robotkernel_key_valu
         else
             svc.resp.error_message = strdup(format_string("kernel request failed with %d", state).c_str());
         svc.resp.error_message_len = strlen(svc.resp.error_message);
-        intf_error("error %d: %s", state, svc.resp.error_message);
+        intf_error("error %d: %s\n", state, svc.resp.error_message);
     } else {
         svc.resp.values_len = t.values_len;
         svc.resp.values = new _robotkernel_key_value_read_string[svc.resp.values_len];
@@ -192,7 +192,7 @@ int key_value::on_list(ln::service_request& req, ln_service_robotkernel_key_valu
         else
             svc.resp.error_message = strdup(format_string("kernel request failed with %d", state).c_str());
         svc.resp.error_message_len = strlen(svc.resp.error_message);
-        intf_error("error %d: %s", state, svc.resp.error_message);
+        intf_error("error %d: %s\n", state, svc.resp.error_message);
     } else {
         svc.resp.keys = t.keys;
         svc.resp.keys_len = t.keys_len;
