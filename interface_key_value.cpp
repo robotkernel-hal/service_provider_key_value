@@ -39,7 +39,8 @@ using namespace std;
 using namespace robotkernel;
 using namespace interface;
 
-#define intf_error(format, ...) klog(error, INTFNAME "%s: %s():%d " format, _mod_name.c_str(), __func__, __LINE__, __VA_ARGS__);
+#define intf_error(format, ...) \
+    klog(interface_error, INTFNAME "%s: %s():%d " format, _mod_name.c_str(), __func__, __LINE__, __VA_ARGS__);
 
 #ifndef __linux__
 static char *strndup(const char *s, size_t n) {
@@ -239,13 +240,14 @@ extern "C" {
 INTERFACE_HANDLE intf_register(const char *mod_name, const char *dev_name, int slave_id) {
     key_value *s = NULL;
 
-    klog(info, INTFNAME "%s: build by: " BUILD_USER "@" BUILD_HOST " date " BUILD_DATE "\n", mod_name);
+    klog(interface_info, INTFNAME "%s: build by: " BUILD_USER "@" BUILD_HOST "\n", mod_name);
+    klog(interface_info, INTFNAME "%s: build date: " BUILD_DATE "\n", mod_name);
 
     // parsing sercos ring configuration
     try {
         s = new key_value(string(mod_name), string(dev_name), slave_id);
     } catch(exception& e) {
-        klog(error, INTFNAME "%s: error constructing interface:\n%s", mod_name, e.what());
+        klog(interface_error, INTFNAME "%s: error constructing interface:\n%s", mod_name, e.what());
         goto ErrorExit;
     }
 
