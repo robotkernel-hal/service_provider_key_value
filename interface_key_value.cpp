@@ -1,9 +1,11 @@
-//! robotkernel module class
+//! robotkernel interface key value requests
 /*!
  * author: Robert Burger
  *
  * $Id$
  */
+
+// vim: tabstop=4 softtabstop=4 shiftwidth=4 expandtab:
 
 /*
  * This file is part of robotkernel.
@@ -23,7 +25,9 @@
  */
 
 #include "interface_key_value.h"
+#include "robotkernel/kernel.h"
 #include "robotkernel/exceptions.h"
+#include "module_intf.h"
 #undef BUILD_DATE
 #undef PACKAGE
 #undef PACKAGE_NAME
@@ -64,11 +68,13 @@ static char *strndup(const char *s, size_t n) {
 /*!
  * \param mod_name module name to register for
  */
-key_value::key_value(const std::string& mod_name, const std::string& dev_name, const int& slave_id) 
+key_value::key_value(const std::string& mod_name, 
+        const std::string& dev_name, const int& slave_id) 
     : _mod_name(mod_name), _dev_name(dev_name), _slave_id(slave_id) {
     kernel& k = *kernel::get_instance();
     if (!k.clnt)
-        throw robotkernel::str_exception("[interface_key_value|%s] no ln_connection!\n", mod_name.c_str());
+        throw robotkernel::str_exception("[interface_key_value|%s] "
+                "no ln_connection!\n", mod_name.c_str());
     
     stringstream base;
     base << k.clnt->name << "." << _mod_name << "." << _dev_name << ".";
@@ -78,7 +84,9 @@ key_value::key_value(const std::string& mod_name, const std::string& dev_name, c
     register_list(k.clnt, base.str() + "key_value.list");
 }
 
-int key_value::on_read(ln::service_request& req, ln_service_robotkernel_key_value_read& svc) {
+//! service reading key value pairs
+int key_value::on_read(ln::service_request& req, 
+        ln_service_robotkernel_key_value_read& svc) {
     memset(&svc.resp, 0, sizeof(svc.resp));
     
     key_value_transfer_t t;
@@ -126,6 +134,7 @@ int key_value::on_read(ln::service_request& req, ln_service_robotkernel_key_valu
     
     return 0;
 }
+
 
 int key_value::on_write(ln::service_request& req, ln_service_robotkernel_key_value_write& svc) {
     memset(&svc.resp, 0, sizeof(svc.resp));

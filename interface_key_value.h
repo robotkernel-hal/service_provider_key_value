@@ -1,9 +1,11 @@
-//! robotkernel module class
+//! robotkernel interface key value requests
 /*!
  * author: Robert Burger
  *
  * $Id$
  */
+
+// vim: tabstop=4 softtabstop=4 shiftwidth=4 expandtab:
 
 /*
  * This file is part of robotkernel.
@@ -25,15 +27,9 @@
 #ifndef __INTERFACE_KEY_VALUE_H__
 #define __INTERFACE_KEY_VALUE_H__
 
-#include "robotkernel/kernel.h"
-#include "robotkernel/module.h"
-#include "robotkernel/interface_intf.h"
-
 #define LN_UNREGISTER_SERVICE_IN_BASE_DETOR  
 #include "ln_messages.h"
 #undef LN_UNREGISTER_SERVICE_IN_BASE_DETOR
-
-#include <list>
 
 #define INTFNAME "[interface_key_value] "
 
@@ -53,11 +49,20 @@ class key_value :
         /*!
          * \param mod_name module name to register for
          */
-        key_value(const std::string& mod_name, const std::string& dev_name, const int& slave_id);
+        key_value(const std::string& mod_name, 
+                const std::string& dev_name, const int& slave_id);
 
-        int on_read(ln::service_request& req, ln_service_robotkernel_key_value_read& svc);
-        int on_write(ln::service_request& req, ln_service_robotkernel_key_value_write& svc);
-        int on_list(ln::service_request& req, ln_service_robotkernel_key_value_list& svc);
+        //! service reading key value pairs
+        int on_read(ln::service_request& req, 
+                ln_service_robotkernel_key_value_read& svc);
+
+        //! service writing key value pairs
+        int on_write(ln::service_request& req, 
+                ln_service_robotkernel_key_value_write& svc);
+
+        //! service listing key value pairs
+        int on_list(ln::service_request& req, 
+                ln_service_robotkernel_key_value_list& svc);
 };
 
 } // namespace interface
