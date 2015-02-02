@@ -10,7 +10,7 @@ libinterface_key_value_la_CXXFLAGS = -fno-strict-aliasing -Wall -I$(top_srcdir)/
 										   -I$(top_builddir) @ROBOTKERNEL_CFLAGS@
 libinterface_key_value_la_LDFLAGS  = -Wall -release $(PACKAGE_VERSION)
 
-VPATH = $(srcdir):$(srcdir)/message_definitions
+VPATH = $(srcdir):$(srcdir)/share/message_definitions
 
 LN_MESSAGES = \
 			  robotkernel/key_value/read \
@@ -24,4 +24,3 @@ ln_messages.h: Makefile $(LN_MESSAGES)
 
 install-exec-hook:
 	cp -r $(srcdir)/share $(prefix)/
-	cp -r $(srcdir)/message_definitions $(prefix)/share/message_definitions
