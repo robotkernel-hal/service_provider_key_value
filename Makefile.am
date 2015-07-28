@@ -1,14 +1,20 @@
 ACLOCAL_AMFLAGS = -I m4 -I scripts/m4
 
 libdir = $(prefix)/lib
-lib_LTLIBRARIES = libinterface_key_value.la
+lib_LTLIBRARIES = libinterface_key_value.la libkey_value_helper.la
 BUILT_SOURCES = ln_messages.h
 CLEANFILES = ln_messages.h
 
 libinterface_key_value_la_SOURCES  = interface_key_value.cpp
-libinterface_key_value_la_CXXFLAGS = -fno-strict-aliasing -Wall -I$(top_srcdir)/src \
-										   -I$(top_builddir) @ROBOTKERNEL_CFLAGS@
+libinterface_key_value_la_CXXFLAGS = -fno-strict-aliasing -Wall -I$(top_srcdir)/include -I$(top_builddir) @ROBOTKERNEL_CFLAGS@
 libinterface_key_value_la_LDFLAGS  = -Wall -release $(PACKAGE_VERSION)
+
+libkey_value_helper_la_SOURCES  = key_value_helper.cpp
+libkey_value_helper_la_CXXFLAGS = -fno-strict-aliasing -Wall -I$(top_srcdir)/include -I$(top_builddir) @ROBOTKERNEL_CFLAGS@
+libkey_value_helper_la_LDFLAGS  = -Wall -release $(PACKAGE_VERSION)
+
+include_headersdir = $(includedir)/interface_key_value
+include_headers_HEADERS = include/interface_key_value/module_intf.h include/interface_key_value/key_value_helper.h
 
 VPATH = $(srcdir):$(srcdir)/share/message_definitions
 

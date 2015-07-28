@@ -27,7 +27,7 @@
 #include "interface_key_value.h"
 #include "robotkernel/kernel.h"
 #include "robotkernel/exceptions.h"
-#include "module_intf.h"
+#include <interface_key_value/module_intf.h>
 #undef BUILD_DATE
 #undef PACKAGE
 #undef PACKAGE_NAME

@@ -13,5 +13,5 @@ C_LIBS              =
 build/${ARCH}/install/lib => lib/${ARCH}
 doc/ => doc/
 share/ => share/
-*.h => include/interface_key_value/
+include/interface_key_value/*.h => include/interface_key_value/
 
