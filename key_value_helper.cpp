@@ -155,9 +155,14 @@ key_value_slave::key_value_slave() {
 }
 key_value_slave::~key_value_slave() {
 	do_unregister();
+	delete_keys();
+}
+void key_value_slave::delete_keys() {
 	for(keys_t::iterator i = keys.begin(); i != keys.end(); ++i) {
 		delete *i;
 	}
+	keys.clear();
+	key_map.clear();
 }
 
 key_value_key_base::key_value_key_base(key_value_slave* parent, std::string name, bool after_change_cb)

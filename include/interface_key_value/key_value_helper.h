@@ -114,6 +114,7 @@ public:
 		key_map[name] = new_key;
 	}
 
+	void delete_keys();
 
 	virtual void handle_key_cb(std::string key, bool op_set, std::string& arg) {
 		throw str_exception_tb("key_value_slave::handle_key_cb not implemented!");
