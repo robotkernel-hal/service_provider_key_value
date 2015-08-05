@@ -1,4 +1,5 @@
-#include <boost/algorithm/string.hpp>
+#include <algorithm>
+#include <string>
 
 #include <interface_key_value/key_value_helper.h>
 
@@ -115,7 +116,7 @@ void key_value_key_base::set_value(std::string repr) {
 
 template<>
 void key_value_eval<bool>(bool* ptr, std::string repr) {
-	boost::algorithm::to_lower(repr);
+	std::transform(repr.begin(), repr.end(), repr.begin(), ::tolower);
 	if(repr == "true" || repr == "1" || repr == "yes")
  		*ptr = true;
 	else
