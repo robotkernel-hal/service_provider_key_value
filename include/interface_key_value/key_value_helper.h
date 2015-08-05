@@ -63,7 +63,13 @@ public:
 		key_value_eval<T>(ptr, repr);			
 	}
 	virtual void _set_value_from_yaml(const YAML::Node& value) {
+#ifdef QNX63
+		T dummy;
+		value >> dummy;
+		*ptr = dummy;
+#else
 		*ptr = value.to<T>();
+#endif
 	}
 	virtual std::string get_value() {
 		return key_value_repr<T>(*ptr);
