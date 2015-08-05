@@ -7,7 +7,7 @@ ARCHS               = sled11-x86-gcc4.x, sled11-x86_64-gcc4.x, vxworks6.7-x86-gc
 SUPPORTED_LANGUAGES = C
 C_INCLUDE_PATHS     = ${PKGROOT}/include/
 C_LIB_PATHS         = ${PKGROOT}/lib/${ARCH}
-C_LIBS              = 
+C_LIBS              = key_value_helper
 
 [install]
 build/${ARCH}/install/lib => lib/${ARCH}
