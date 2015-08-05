@@ -11,7 +11,7 @@ C_LIBS              = key_value_helper
 
 [install]
 build/${ARCH}/install/lib => lib/${ARCH}
-build/${ARCH}/install/include/interface_key_value => include/interface_key_value
+build/sled11-x86-gcc4.x/install/include/interface_key_value => include/interface_key_value
 doc/ => doc/
 share/ => share/
 
