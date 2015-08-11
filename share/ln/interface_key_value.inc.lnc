@@ -18,3 +18,5 @@ add_message_definition_dir: %(interface_key_value_base)/share/message_definition
 ifndef rk_interfaces: rk_interfaces: ""
 rk_interfaces: %(rk_interfaces):%(interface_key_value_libdir)
 
+ifndef rk_libpath: rk_libpath: ""
+rk_libpath: %(rk_libpath):%(interface_key_value_libdir)
