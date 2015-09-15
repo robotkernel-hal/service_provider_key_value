@@ -43,9 +43,6 @@ using namespace std;
 using namespace robotkernel;
 using namespace interface;
 
-#define intf_error(format, ...) \
-    klog(interface_error, INTFNAME "%s: %s():%d " format, _mod_name.c_str(), __func__, __LINE__, __VA_ARGS__);
-
 #ifndef __linux__
 static char *strndup(const char *s, size_t n) {
     const char* cp = s;
@@ -66,18 +63,17 @@ static char *strndup(const char *s, size_t n) {
 
 //! default construction
 /*!
- * \param mod_name module name to register for
+ * \param node configuration node
  */
-key_value::key_value(const std::string& mod_name, 
-        const std::string& dev_name, const int& slave_id) 
-    : _mod_name(mod_name), _dev_name(dev_name), _slave_id(slave_id) {
+key_value::key_value(const YAML::Node& node) 
+    : interface_base("key_value", node) {
     kernel& k = *kernel::get_instance();
     if (!k.clnt)
         throw robotkernel::str_exception("[interface_key_value|%s] "
                 "no ln_connection!\n", mod_name.c_str());
     
     stringstream base;
-    base << k.clnt->name << "." << _mod_name << "." << _dev_name << ".";
+    base << k.clnt->name << "." << mod_name << "." << dev_name << ".";
 
     register_read(k.clnt, base.str() + "key_value.read");
     register_write(k.clnt, base.str() + "key_value.write");
@@ -91,14 +87,14 @@ int key_value::on_read(ln::service_request& req,
     
     key_value_transfer_t t;
     memset(&t, 0, sizeof(t));
-    t.slave_id = _slave_id;
+    t.slave_id = slave_id;
     t.command = kvc_read;
     t.keys = svc.req.keys;
     t.keys_len = svc.req.keys_len;
     t.values = new char*[svc.req.keys_len];
     t.values_len = t.keys_len;
     
-    int state = kernel::request_cb(_mod_name.c_str(), MOD_REQUEST_KEY_VALUE_TRANSFER, (void *)&t);
+    int state = kernel::request_cb(mod_name.c_str(), MOD_REQUEST_KEY_VALUE_TRANSFER, (void *)&t);
     
     if (state != 0) {
         // error!
@@ -107,7 +103,7 @@ int key_value::on_read(ln::service_request& req,
         else
             svc.resp.error_message = strdup(format_string("kernel request failed with %d", state).c_str());
         svc.resp.error_message_len = strlen(svc.resp.error_message);
-        intf_error("error %d: %s\n", state, svc.resp.error_message);
+        log(error, "%d: %s\n", state, svc.resp.error_message);
     } else {
         svc.resp.values_len = t.values_len;
         svc.resp.values = new _robotkernel_key_value_read_string[svc.resp.values_len];
@@ -151,7 +147,7 @@ int key_value::on_write(ln::service_request& req, ln_service_robotkernel_key_val
     
     key_value_transfer_t t;
     memset(&t, 0, sizeof(t));
-    t.slave_id = _slave_id;
+    t.slave_id = slave_id;
     t.command = kvc_write;
     t.keys = svc.req.keys;
     t.keys_len = svc.req.keys_len;
@@ -161,7 +157,7 @@ int key_value::on_write(ln::service_request& req, ln_service_robotkernel_key_val
     for (unsigned i = 0; i < t.values_len; ++i)
         t.values[i] = strndup(svc.req.values[i].value, svc.req.values[i].value_len);
 
-    int state = kernel::request_cb(_mod_name.c_str(), MOD_REQUEST_KEY_VALUE_TRANSFER, (void *)&t);
+    int state = kernel::request_cb(mod_name.c_str(), MOD_REQUEST_KEY_VALUE_TRANSFER, (void *)&t);
 
     if (state != 0) {
         // error!
@@ -190,10 +186,10 @@ int key_value::on_list(ln::service_request& req, ln_service_robotkernel_key_valu
     
     key_value_transfer_t t;
     memset(&t, 0, sizeof(t));
-    t.slave_id = _slave_id;
+    t.slave_id = slave_id;
     t.command = kvc_list;
     
-    int state = kernel::request_cb(_mod_name.c_str(), MOD_REQUEST_KEY_VALUE_TRANSFER, (void *)&t);
+    int state = kernel::request_cb(mod_name.c_str(), MOD_REQUEST_KEY_VALUE_TRANSFER, (void *)&t);
 
     if (state != 0) {
         // error!
@@ -202,7 +198,7 @@ int key_value::on_list(ln::service_request& req, ln_service_robotkernel_key_valu
         else
             svc.resp.error_message = strdup(format_string("kernel request failed with %d", state).c_str());
         svc.resp.error_message_len = strlen(svc.resp.error_message);
-        intf_error("error %d: %s\n", state, svc.resp.error_message);
+        log(error, "%d: %s\n", state, svc.resp.error_message);
     } else {
         svc.resp.keys = t.keys;
         svc.resp.keys_len = t.keys_len;
@@ -232,59 +228,4 @@ int key_value::on_list(ln::service_request& req, ln_service_robotkernel_key_valu
     
     return 0;
 }
-
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-#if 0
-}
-#endif
-
-//! interface register
-/*!
- * \param mod_name module name to register
- * \return interface handle
- */
-INTERFACE_HANDLE intf_register(const char *mod_name, const char *dev_name, int slave_id) {
-    key_value *s = NULL;
-
-    klog(interface_info, INTFNAME "%s: build by: " BUILD_USER "@" BUILD_HOST "\n", mod_name);
-    klog(interface_info, INTFNAME "%s: build date: " BUILD_DATE "\n", mod_name);
-
-    // parsing sercos ring configuration
-    try {
-        s = new key_value(string(mod_name), string(dev_name), slave_id);
-    } catch(exception& e) {
-        klog(interface_error, INTFNAME "%s: error constructing interface:\n%s", mod_name, e.what());
-        goto ErrorExit;
-    }
-
-    return (INTERFACE_HANDLE)s;
-
-ErrorExit:
-    if (s)
-        delete s;
-
-    return (INTERFACE_HANDLE)NULL;
-}
-
-//! interface unregister
-/*!
- * \param hdl interface handle
- */
-void intf_unregister(INTERFACE_HANDLE hdl) {
-    // cast struct
-    key_value *s = (key_value *)hdl;
-
-    if (s)
-        delete s;
-}
-
-#if 0
-{
-#endif
-#ifdef __cplusplus
-}
-#endif
 

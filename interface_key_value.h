@@ -27,30 +27,26 @@
 #ifndef __INTERFACE_KEY_VALUE_H__
 #define __INTERFACE_KEY_VALUE_H__
 
+#include "robotkernel/interface_base.h"
+
 #define LN_UNREGISTER_SERVICE_IN_BASE_DETOR  
 #include "ln_messages.h"
 #undef LN_UNREGISTER_SERVICE_IN_BASE_DETOR
 
-#define INTFNAME "[interface_key_value] "
-
-namespace interface {
+namespace interface_key_value {
     
 class key_value : 
+    public robotkernel::interface_base,
     public ln_service_read_base,
     public ln_service_write_base,
     public ln_service_list_base 
 {
-    const std::string _mod_name;
-    const std::string _dev_name;
-    const int _slave_id;
-
     public:
         //! default construction
         /*!
-         * \param mod_name module name to register for
+         * \param node configuration node
          */
-        key_value(const std::string& mod_name, 
-                const std::string& dev_name, const int& slave_id);
+        key_value(const YAML::Node& node);
 
         //! service reading key value pairs
         int on_read(ln::service_request& req, 
