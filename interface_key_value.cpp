@@ -28,20 +28,14 @@
 #include "robotkernel/kernel.h"
 #include "robotkernel/exceptions.h"
 #include <interface_key_value/module_intf.h>
-#undef BUILD_DATE
-#undef PACKAGE
-#undef PACKAGE_NAME
-#undef PACKAGE_STRING
-#undef PACKAGE_TARNAME
-#undef PACKAGE_VERSION
-#undef VERSION
-#include "config.h"
 
 #include <string_util/string_util.h>
 
+INTERFACE_DEF(key_value, interface_key_value::key_value)
+
 using namespace std;
 using namespace robotkernel;
-using namespace interface;
+using namespace interface_key_value;
 
 #ifndef __linux__
 static char *strndup(const char *s, size_t n) {

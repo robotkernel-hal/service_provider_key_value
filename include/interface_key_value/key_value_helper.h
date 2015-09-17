@@ -68,7 +68,7 @@ public:
 		value >> dummy;
 		*ptr = dummy;
 #else
-		*ptr = value.to<T>();
+		*ptr = value.as<T>();
 #endif
 	}
 	virtual std::string get_value() {
@@ -100,15 +100,18 @@ public:
 			robotkernel::kernel::unregister_interface_cb(interface_id);
 		interface_id = NULL;
 	}
-	void do_register() {
+	void do_register(const robotkernel::loglevel& ll) {
 		if(!module)
 			throw str_exception_tb("module is NULL - make sure to call key_value_module::add_key_value_slave() before key_value_slave::do_register()!");
 		do_unregister();
+
+        YAML::Node node;
+        node["mod_name"] = module->name;
+        node["dev_name"] = name;
+        node["slave_id"] = slave_id;
+        node["loglevel"] = (string)ll;
 		interface_id = robotkernel::kernel::register_interface_cb(
-			module->name.c_str(), 
-			"libinterface_key_value.so",
-			name.c_str(),
-			slave_id);
+			"libinterface_key_value.so", node);
 	}
 	
 	void check_exists(std::string name) {
