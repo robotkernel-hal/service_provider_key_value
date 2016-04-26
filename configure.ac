@@ -2,61 +2,29 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.63])
-AC_INIT([interface_key_value], [4.0.1], [robert.burger@dlr.de])
+AC_INIT([interface_key_value], [4.0.2], [robert.burger@dlr.de])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
 
-# load env-file with each make invocation
-if test -n "$SOURCE_ENV"; then
-   echo "loading $SOURCE_ENV"
-   source $SOURCE_ENV
-fi
+RMPM_ENV # must be before AC_PROG* but after AC_PROG_MAKE_SET and after AM_INIT_AUTOMAKE
+RMPM_ARCH
 
 # Checks for programs.
+m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
 AC_PROG_CXX
 AC_PROG_AWK
 AC_PROG_INSTALL
 AC_PROG_LIBTOOL
 AC_PROG_LN_S
-AC_PROG_MAKE_SET
-
-if test -z "$MAKE"; then
-   MAKE=make
-fi
-# expand path with each make invocation
-if test -n "$TOOLCHAIN"; then
-   MAKE="$MAKE PATH=$TOOLCHAIN:$PATH"
-   PATH=$TOOLCHAIN:$PATH
-fi
-# load env-file with each make invocation
-if test -n "$SOURCE_ENV"; then
-   echo "loading $SOURCE_ENV"
-   source $SOURCE_ENV
-   MAKE="source $SOURCE_ENV; $MAKE"
-fi
-if test -n "$MAKE"; then
-   SET_MAKE="MAKE := $MAKE"
-fi
-AC_SUBST(SET_MAKE)
-
-# setup rmpm
-RMPM_ARCH
-
-if test "$rmpm_host" == "arm-angstrom-linux-gnueabi"; then
-   ARCH_CFLAGS="-DNO_RDTSC"
-fi
-AC_SUBST(ARCH_CFLAGS)
+m4_ifdef([PKG_PROG_PKG_CONFIG], [PKG_PROG_PKG_CONFIG])
+m4_ifdef([PKG_INSTALLDIR], [PKG_INSTALLDIR], [pkgconfigdir='${libdir}/pkgconfig' AC_SUBST([pkgconfigdir])])
 
 PKG_CHECK_MODULES([ROBOTKERNEL], [robotkernel], [], [
                     RMPM_CHECK_MODULES([ROBOTKERNEL], [robotkernel.robotkernel])
                    ])
-LN_BASE=$(env -i LN_BASE=$LN_BASE "$srcdir"/scripts/get_ln_base.py $ROBOTKERNEL_CXX_DEPENDS)
-LN_GENERATE_ARGS='-md_dir $(srcdir)/share/message_definitions'
-LN_GENERATE="env -i $LN_BASE/scripts/ln_generate $LN_GENERATE_ARGS"
 
-AC_SUBST(LN_BASE)
-AC_SUBST(LN_GENERATE)
+RM_FIND_LN_FROM_ENV
 
 AC_DEFINE_UNQUOTED(BUILD_DATE,"`date -u`",[Date (usually date of extraction from SVN).])
 AC_DEFINE_UNQUOTED(BUILD_USER,"`whoami`",[User (usually user logged in on shell).])
