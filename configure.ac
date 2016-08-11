@@ -23,12 +23,7 @@ AC_PROG_LN_S
 m4_ifdef([PKG_PROG_PKG_CONFIG], [PKG_PROG_PKG_CONFIG])
 m4_ifdef([PKG_INSTALLDIR], [PKG_INSTALLDIR], [pkgconfigdir='${libdir}/pkgconfig' AC_SUBST([pkgconfigdir])])
 
-PKG_CHECK_MODULES([ROBOTKERNEL], [robotkernel], [], [
-                    RMPM_CHECK_MODULES([ROBOTKERNEL], [robotkernel.robotkernel])
-                   ])
-
-PKG_CHECK_MODULES([LIBSTRING_UTIL], [libstring_util], [], [RMPM_CHECK_MODULES([LIBSTRING_UTIL], [software.libstring_util])])
-
+m4_esyscmd([scripts/m4_deps.py])
 RM_FIND_LN_FROM_ENV
 
 AC_DEFINE_UNQUOTED(BUILD_DATE,"`date -u`",[Date (usually date of extraction from SVN).])
