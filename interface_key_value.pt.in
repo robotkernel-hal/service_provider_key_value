@@ -15,4 +15,3 @@ build/${ARCH}/install/lib => lib/${ARCH}
 build/sled11-x86-gcc4.x/install/include/@PACKAGE@ => include/@PACKAGE@
 doc/ => doc/
 share/ => share/
-
