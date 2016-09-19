@@ -23,7 +23,7 @@ AC_PROG_LN_S
 m4_ifdef([PKG_PROG_PKG_CONFIG], [PKG_PROG_PKG_CONFIG])
 m4_ifdef([PKG_INSTALLDIR], [PKG_INSTALLDIR], [pkgconfigdir='${libdir}/pkgconfig' AC_SUBST([pkgconfigdir])])
 
-m4_esyscmd([scripts/m4_deps.py])
+m4_esyscmd([env -i python scripts/m4_deps.py])
 RM_FIND_LN_FROM_ENV
 
 AC_DEFINE_UNQUOTED(BUILD_DATE,"`date -u`",[Date (usually date of extraction from SVN).])
@@ -57,8 +57,7 @@ AC_CHECK_FUNCS([strdup])
 AC_CHECK_LIB(dl, dlopen, DL_LIBS="-ldl", DL_LIBS=)
 AC_SUBST(DL_LIBS)
 
-
-AC_CONFIG_FILES([Makefile src/main/cpp/Makefile])
+AC_CONFIG_FILES([Makefile src/main/cpp/Makefile interface_key_value.pc])
 
 AC_OUTPUT
 
