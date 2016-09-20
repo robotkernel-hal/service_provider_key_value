@@ -105,11 +105,11 @@ public:
 			throw str_exception_tb("module is NULL - make sure to call key_value_module::add_key_value_slave() before key_value_slave::do_register()!");
 		do_unregister();
 
-        YAML::Node node;
-        node["mod_name"] = module->name;
-        node["dev_name"] = name;
-        node["slave_id"] = slave_id;
-        node["loglevel"] = (string)ll;
+		YAML::Node node;
+		node["mod_name"] = module->name;
+		node["dev_name"] = name;
+		node["slave_id"] = slave_id;
+		node["loglevel"] = (string)ll;
 		interface_id = robotkernel::kernel::register_interface_cb(
 			"libinterface_key_value.so", node);
 	}
