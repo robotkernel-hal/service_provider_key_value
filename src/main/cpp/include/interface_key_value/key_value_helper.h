@@ -44,10 +44,8 @@ public:
 	virtual void* get_void_pointer() = 0;
 };
 
-template <typename T>
-void key_value_eval(T* ptr, std::string repr);
-template <typename T>
-std::string key_value_repr(T& ptr);
+template <typename T> void key_value_eval(T* ptr, std::string repr);
+template <typename T> std::string key_value_repr(T& ptr);
 
 template <typename T>
 class key_value_key : public key_value_key_base {	

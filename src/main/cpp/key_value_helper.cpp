@@ -127,12 +127,19 @@ void key_value_eval<float>(float* ptr, std::string repr) {
 	*ptr = atof(repr.c_str());
 }
 template<>
+void key_value_eval<int>(int* ptr, std::string repr) {
+	*ptr = atoi(repr.c_str());
+}
+template<>
+void key_value_eval<unsigned int>(unsigned int* ptr, std::string repr) {
+	*ptr = (unsigned int)strtol(repr.c_str(), (char**)NULL, 10);
+}
+template<>
 void key_value_eval<string>(string* ptr, std::string repr) {
 	py_value* v = eval_full(repr);
 	*ptr = string(*v);
 	delete v;
 }
-
 
 template<>
 std::string key_value_repr<bool>(bool& value) {
@@ -143,6 +150,14 @@ std::string key_value_repr<bool>(bool& value) {
 template<>
 std::string key_value_repr<float>(float& value) {
 	return format_string("%f", value);
+}
+template<>
+std::string key_value_repr<int>(int& value) {
+	return format_string("%d", value);
+}
+template<>
+std::string key_value_repr<unsigned int>(unsigned int& value) {
+	return format_string("%u", value);
 }
 template<>
 std::string key_value_repr<string>(string& value) {
