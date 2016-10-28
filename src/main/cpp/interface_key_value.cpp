@@ -69,9 +69,16 @@ key_value::key_value(const YAML::Node& node)
     stringstream base;
     base << k.clnt->name << "." << mod_name << "." << dev_name << ".";
 
-    register_read(k.clnt, base.str() + "key_value.read");
-    register_write(k.clnt, base.str() + "key_value.write");
-    register_list(k.clnt, base.str() + "key_value.list");
+    string group_name_str = "";
+    if(node["ln_service_group"])
+	    group_name_str = node["ln_service_group"].as<string>();
+    const char* group_name = NULL;
+    if(group_name_str.size())
+	    group_name = group_name_str.c_str();
+    
+    register_read(k.clnt, base.str() + "key_value.read", group_name);
+    register_write(k.clnt, base.str() + "key_value.write", group_name);
+    register_list(k.clnt, base.str() + "key_value.list", group_name);
 }
 
 //! service reading key value pairs
