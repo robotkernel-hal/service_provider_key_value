@@ -21,7 +21,7 @@ public:
 	key_value_module(std::string name);
 	
 	void add_key_value_slave(key_value_slave* slave, std::string name, unsigned int slave_id);
-	void handle_key_value_request(void* ptr);
+	int handle_key_value_request(void* ptr);
 
 	void log(robotkernel::loglevel lvl, const char *format, ...);
 	void debug(const char *format, ...);

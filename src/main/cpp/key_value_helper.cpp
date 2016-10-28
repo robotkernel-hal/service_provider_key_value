@@ -32,7 +32,7 @@ void key_value_module::debug(const char *format, ...) {
 	klog(robotkernel::verbose, "[key_value_helper|%s] %s", name.c_str(), buf);
 }
 
-void key_value_module::handle_key_value_request(void* ptr) {
+int key_value_module::handle_key_value_request(void* ptr) {
 	key_value_transfer_t* t = (key_value_transfer_t*)ptr;
 	t->error_msg = NULL;
 
@@ -64,6 +64,7 @@ void key_value_module::handle_key_value_request(void* ptr) {
 			if(!t->values)
 				throw str_exception_tb("key_value_transfer_t::values is NULL!");
 			memset(t->values, 0, t->values_len * sizeof(char*));
+			t->values_len = 0; // if exception happens after this we do not signal valid values...
 		
 			for(unsigned int i = 0; i < t->keys_len; ++i) {
 				unsigned int k = t->keys[i];
@@ -73,6 +74,7 @@ void key_value_module::handle_key_value_request(void* ptr) {
 
 				t->values[i] = strdup(key->get_value().c_str());
 			}
+			t->values_len = t->keys_len; // values valid now
 			break;
 		}
 		case kvc_write: {
@@ -103,8 +105,9 @@ void key_value_module::handle_key_value_request(void* ptr) {
 		string msg = format_string("%s: key_value error:\n%s", name.c_str(), e.what());
 		log(robotkernel::error, "%s\n", msg.c_str());
 		t->error_msg = strdup(msg.c_str());
-		return;
+		return -1;
 	}
+	return 0;
 }
 
 void key_value_key_base::set_value(std::string repr) {
