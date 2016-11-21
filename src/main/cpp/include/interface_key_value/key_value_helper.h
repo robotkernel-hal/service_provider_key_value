@@ -118,7 +118,7 @@ public:
 	}
 	void _add_key(key_value_key_base* new_key) {
 		keys.push_back(new_key);
-		key_map[name] = new_key;
+		key_map[new_key->name] = new_key;
 	}
 
 	void delete_keys();
