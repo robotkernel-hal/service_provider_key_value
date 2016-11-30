@@ -34,7 +34,7 @@
 INTERFACE_DEF(key_value, interface_key_value::key_value)
 
 using namespace std;
-using namespace robotkernel;
+using namespace ::robotkernel;
 using namespace interface_key_value;
 
 #ifndef __linux__
@@ -63,7 +63,7 @@ key_value::key_value(const YAML::Node& node)
     : interface_base("key_value", node) {
     kernel& k = *kernel::get_instance();
     if (!k.clnt)
-        throw robotkernel::str_exception("[interface_key_value|%s] "
+	    throw ::str_exception("[interface_key_value|%s] "
                 "no ln_connection!\n", mod_name.c_str());
     
     stringstream base;
@@ -82,8 +82,7 @@ key_value::key_value(const YAML::Node& node)
 }
 
 //! service reading key value pairs
-int key_value::on_read(ln::service_request& req, 
-        ln_service_robotkernel_key_value_read& svc) {
+int key_value::on_read(ln::service_request& req, robotkernel_key_value_read_t& svc) {
     memset(&svc.resp, 0, sizeof(svc.resp));
     
     key_value_transfer_t t;
@@ -107,7 +106,7 @@ int key_value::on_read(ln::service_request& req,
         log(error, "%d: %s\n", state, svc.resp.error_message);
     } else {
         svc.resp.values_len = t.values_len;
-        svc.resp.values = new _robotkernel_key_value_read_string[svc.resp.values_len];
+        svc.resp.values = new robotkernel_key_value_string_t[svc.resp.values_len];
         for (unsigned i = 0; i < t.values_len; ++i) {
             svc.resp.values[i].value = t.values[i]; 
             svc.resp.values[i].value_len = strlen(t.values[i]);
@@ -133,7 +132,7 @@ int key_value::on_read(ln::service_request& req,
 }
 
 
-int key_value::on_write(ln::service_request& req, ln_service_robotkernel_key_value_write& svc) {
+int key_value::on_write(ln::service_request& req, robotkernel_key_value_write_t& svc) {
     memset(&svc.resp, 0, sizeof(svc.resp));
     
     if(svc.req.keys_len != svc.req.values_len) {
@@ -182,7 +181,7 @@ int key_value::on_write(ln::service_request& req, ln_service_robotkernel_key_val
     return 0;
 }
         
-int key_value::on_list(ln::service_request& req, ln_service_robotkernel_key_value_list& svc) {
+int key_value::on_list(ln::service_request& req, robotkernel_key_value_list_t& svc) {
     memset(&svc.resp, 0, sizeof(svc.resp));
     
     key_value_transfer_t t;
@@ -205,7 +204,7 @@ int key_value::on_list(ln::service_request& req, ln_service_robotkernel_key_valu
         svc.resp.keys_len = t.keys_len;
 
         svc.resp.names_len = t.values_len;
-        svc.resp.names = new _robotkernel_key_value_list_string[svc.resp.names_len];
+        svc.resp.names = new robotkernel_key_value_string_t[svc.resp.names_len];
         for (unsigned i = 0; i < svc.resp.names_len; ++i) {
             svc.resp.names[i].value = t.values[i]; 
             svc.resp.names[i].value_len = strlen(t.values[i]);

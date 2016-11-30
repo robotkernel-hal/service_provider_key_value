@@ -34,15 +34,13 @@
 
 namespace interface_key_value {
 
-#define LN_UNREGISTER_SERVICE_IN_BASE_DETOR  
 #include "ln_messages.h"
-#undef LN_UNREGISTER_SERVICE_IN_BASE_DETOR
     
 class key_value : 
-    public robotkernel::interface_base,
-    public ln_service_read_base,
-    public ln_service_write_base,
-    public ln_service_list_base 
+		public ::robotkernel::interface_base,
+		public robotkernel::key_value::read_base,
+		public robotkernel::key_value::write_base,
+		public robotkernel::key_value::list_base,
 {
     public:
         //! default construction
@@ -53,15 +51,17 @@ class key_value :
 
         //! service reading key value pairs
         int on_read(ln::service_request& req, 
-                ln_service_robotkernel_key_value_read& svc);
+                robotkernel_key_value_read_t& svc);
 
         //! service writing key value pairs
         int on_write(ln::service_request& req, 
-                ln_service_robotkernel_key_value_write& svc);
+                robotkernel_key_value_write_t& svc);
 
         //! service listing key value pairs
         int on_list(ln::service_request& req, 
-                ln_service_robotkernel_key_value_list& svc);
+                robotkernel_key_value_list_t& svc);
+
+	
 };
 
 } // namespace interface
