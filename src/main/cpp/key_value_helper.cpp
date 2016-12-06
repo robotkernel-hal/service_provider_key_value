@@ -97,6 +97,19 @@ int key_value_module::handle_key_value_request(void* ptr) {
 			}
 			break;
 		}
+		case kvc_list_descriptions: {
+			debug("list_descriptions %d\n", t->slave_id);
+		
+			t->keys_len = slave->keys.size();
+			t->descriptions = (key_value_description_t*)malloc(sizeof(key_value_description_t) * t->keys_len);
+		
+			for(unsigned int k = 0; k < t->keys_len; k++) {
+				key_value_key_base* key = slave->keys[k];
+				t->descriptions[k] = key->description;
+			}
+			break;
+		}
+			
 		default:
 			throw str_exception_tb("invalid key_value_command: %d", t->command);
 		}
@@ -186,6 +199,46 @@ void key_value_slave::delete_keys() {
 
 key_value_key_base::key_value_key_base(key_value_slave* parent, std::string name, bool after_change_cb)
 	: parent(parent), name(name), after_change_cb(after_change_cb) {
+	memset(&description, 0, sizeof(description));
 }
 key_value_key_base::~key_value_key_base() {
+#define free_description_if_set(field)		\
+	if(description.field)			\
+		free((void*)description.field);
+	
+	free_description_if_set(description);
+	free_description_if_set(unit);
+	free_description_if_set(default_value);
+	free_description_if_set(format);	
 }
+
+key_value_key_base& key_value_key_base::describe(string desc) {
+	if(description.description)
+		free((void*)description.description);
+	description.description = strdup(desc.c_str());
+	return *this;
+}
+
+key_value_key_base& key_value_key_base::unit(string unit) {
+	if(description.unit)
+		free((void*)description.unit);
+	description.unit = strdup(unit.c_str());
+	return *this;
+}
+
+key_value_key_base& key_value_key_base::default_value(string default_value) {
+	if(description.default_value)
+		free((void*)description.default_value);
+	description.default_value = strdup(default_value.c_str());
+	return *this;
+
+}
+
+key_value_key_base& key_value_key_base::format(string format) {
+	if(description.format)
+		free((void*)description.format);
+	description.format = strdup(format.c_str());
+	return *this;
+
+}
+

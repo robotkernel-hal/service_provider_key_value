@@ -34,8 +34,17 @@
 typedef enum key_value_command {
     kvc_read  = 0,      //!< read key value pairs
     kvc_write = 1,      //!< write key value pairs
-    kvc_list  = 2       //!< list available key value pairs
+    kvc_list  = 2,      //!< list available key value pairs
+    kvc_list_descriptions  = 3 //!< list descriptions for each key
 } key_value_command_t;
+
+typedef struct {
+    const char* description;
+    const char* unit;
+    const char* default_value;
+    const char* format;
+    uint8_t read_only;
+} key_value_description_t;
 
 typedef struct key_value_transfer {
     int slave_id;
@@ -54,6 +63,12 @@ typedef struct key_value_transfer {
     size_t values_len;
     char *error_msg;    //! kvc_read, kvc_write, kvc_list: provided by callee or 
                         //!      NULL, caller has to free() error_msg
+
+    key_value_description_t* descriptions; /* only used for kvc_list_descriptions,
+                                              length is returned via keys_len,
+                                              descriptions must be freed by caller,
+                                              descriptions[x] must also be freed by caller
+                                           */
 } key_value_transfer_t;
 
 #define MOD_REQUEST_KEY_VALUE_TRANSFER  MOD_REQUEST_KEY_VALUE(0x0001, key_value_transfer_t)

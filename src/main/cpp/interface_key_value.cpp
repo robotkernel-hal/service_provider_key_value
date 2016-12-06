@@ -79,6 +79,7 @@ key_value::key_value(const YAML::Node& node)
     register_read(k.clnt, base.str() + "key_value.read", group_name);
     register_write(k.clnt, base.str() + "key_value.write", group_name);
     register_list(k.clnt, base.str() + "key_value.list", group_name);
+    register_list_descriptions(k.clnt, base.str() + "key_value.list_descriptions", group_name);
 }
 
 //! service reading key value pairs
@@ -222,10 +223,70 @@ int key_value::on_list(ln::service_request& req, robotkernel_key_value_list_t& s
     for (unsigned i = 0; i < t.values_len; ++i)
         if (t.values[i])
             free(t.values[i]);
-
+    
     if(svc.resp.names)
         delete[] svc.resp.names;
     
     return 0;
 }
 
+int key_value::on_list_descriptions(ln::service_request& req, robotkernel_key_value_list_descriptions_t& data) {
+    memset(&data.resp, 0, sizeof(data.resp));
+    
+    key_value_transfer_t t;
+    memset(&t, 0, sizeof(t));
+    t.slave_id = slave_id;
+    t.command = kvc_list_descriptions;
+    
+    try {
+        int ret = kernel::request_cb(mod_name.c_str(), MOD_REQUEST_KEY_VALUE_TRANSFER, (void *)&t);
+        
+        if(ret) {
+            // error!
+            if(t.error_msg) {
+                throw ::str_exception_tb("module returned error %d for list_descriptions key-value-transfer:\n%s", ret, t.error_msg);
+            } else {
+                throw ::str_exception_tb("module returned error %d for list_descriptions key-value-transfer (without error message)!", ret);
+            }
+        }
+        
+        vector<robotkernel_key_value_description_t> descriptions(t.keys_len);
+        for(unsigned int i = 0; i < t.keys_len; i++) {
+            
+#define pass_string(target, source)                                     \
+            target.value_len = source ? strlen(source) : 0;             \
+            target.value     = target.value_len ? (char*)source : NULL;   \
+
+#define pass_string_field(field)                                        \
+            pass_string(descriptions[i].field, t.descriptions[i].field);
+
+#define pass_field(field)                                                \
+            descriptions[i].field = t.descriptions[i].field;
+
+            pass_string_field(description);
+            pass_string_field(unit);
+            pass_string_field(default_value);
+            pass_string_field(format);
+            pass_field       (read_only);
+            
+        }
+        data.resp.descriptions = &descriptions[0];
+        data.resp.descriptions_len = descriptions.size();
+
+        req.respond();        
+    }
+    catch(const exception& e) {
+        log(error, "%s: caught exception:\n%s\n", __func__, e.what());
+        ln::string_buffer err(&data.resp.error_message, e.what());
+        req.respond();
+    }
+
+    if(t.keys_len && t.descriptions)
+        free(t.descriptions);
+    
+    if(t.error_msg)
+        free(t.error_msg);
+    
+    return 0;
+
+}

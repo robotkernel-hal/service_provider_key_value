@@ -1,0 +1,7 @@
+service
+
+response
+char* error_message
+define description as "description"
+# all keys, in same order as returned by list-service
+description* descriptions

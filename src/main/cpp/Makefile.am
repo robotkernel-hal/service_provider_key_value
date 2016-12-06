@@ -20,7 +20,9 @@ VPATH = $(srcdir):$(top_srcdir)/share/ln/message_definitions
 LN_MESSAGES = \
 			  robotkernel/key_value/read \
 			  robotkernel/key_value/write \
-			  robotkernel/key_value/list
+			  robotkernel/key_value/list \
+			  robotkernel/key_value/list_descriptions
+
 
 ln_messages.h: Makefile $(LN_MESSAGES)
 	@echo creating ln_messages.h

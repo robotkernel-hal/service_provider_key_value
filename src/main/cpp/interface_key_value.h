@@ -41,6 +41,7 @@ class key_value :
 		public robotkernel::key_value::read_base,
 		public robotkernel::key_value::write_base,
 		public robotkernel::key_value::list_base,
+		public robotkernel::key_value::list_descriptions_base 
 {
     public:
         //! default construction
@@ -61,7 +62,7 @@ class key_value :
         int on_list(ln::service_request& req, 
                 robotkernel_key_value_list_t& svc);
 
-	
+	int on_list_descriptions(ln::service_request& req, robotkernel_key_value_list_descriptions_t& data);
 };
 
 } // namespace interface
