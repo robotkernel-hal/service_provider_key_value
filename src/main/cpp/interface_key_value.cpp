@@ -62,154 +62,192 @@ static char *strndup(const char *s, size_t n) {
 key_value::key_value(const YAML::Node& node) 
     : interface_base("key_value", node) {
     kernel& k = *kernel::get_instance();
-    if (!k.clnt)
-        throw robotkernel::str_exception("[interface_key_value|%s] "
-                "no ln_connection!\n", mod_name.c_str());
     
     stringstream base;
-    base << k.clnt->name << "." << mod_name << "." << dev_name << ".";
+    base << mod_name << "." << dev_name << ".key_value.";
 
-    register_read(k.clnt, base.str() + "key_value.read");
-    register_write(k.clnt, base.str() + "key_value.write");
-    register_list(k.clnt, base.str() + "key_value.list");
+    k.add_service(mod_name, base.str() + "read", service_definition_read,
+            boost::bind(&key_value::service_read, this, _1));
+    k.add_service(mod_name, base.str() + "write", service_definition_write,
+            boost::bind(&key_value::service_write, this, _1));
+    k.add_service(mod_name, base.str() + "list", service_definition_list,
+            boost::bind(&key_value::service_list, this, _1));
 }
 
-//! service reading key value pairs
-int key_value::on_read(ln::service_request& req, 
-        ln_service_robotkernel_key_value_read& svc) {
-    memset(&svc.resp, 0, sizeof(svc.resp));
+//! service callback key-value read
+/*!
+ * \param message service message
+ * \return success
+ */
+int key_value::service_read(YAML::Node& message) {
+    // vectors for keys and values
+    std::vector<uint32_t> keys = 
+        get_as<std::vector<uint32_t> >(message["request"], "keys");    
+    std::vector<string> values(keys.size());
     
+    // default response values
+    message["response"]["values"] = values;
+    message["response"]["error_message"] = "";
+
     key_value_transfer_t t;
     memset(&t, 0, sizeof(t));
-    t.slave_id = slave_id;
-    t.command = kvc_read;
-    t.keys = svc.req.keys;
-    t.keys_len = svc.req.keys_len;
-    t.values = new char*[svc.req.keys_len];
-    t.values_len = t.keys_len;
-    
-    int state = kernel::request_cb(mod_name.c_str(), MOD_REQUEST_KEY_VALUE_TRANSFER, (void *)&t);
+    t.slave_id      = slave_id;
+    t.command       = kvc_read;
+    t.keys          = &keys[0];
+    t.keys_len      = keys.size();
+    t.values        = new char*[keys.size()];
+    t.values_len    = keys.size();
+
+    int state = kernel::request_cb(mod_name.c_str(), 
+            MOD_REQUEST_KEY_VALUE_TRANSFER, (void *)&t);
     
     if (state != 0) {
         // error!
-        if(t.error_msg)
-            svc.resp.error_message = t.error_msg;
-        else
-            svc.resp.error_message = strdup(format_string("kernel request failed with %d", state).c_str());
-        svc.resp.error_message_len = strlen(svc.resp.error_message);
-        log(error, "%d: %s\n", state, svc.resp.error_message);
-    } else {
-        svc.resp.values_len = t.values_len;
-        svc.resp.values = new _robotkernel_key_value_read_string[svc.resp.values_len];
-        for (unsigned i = 0; i < t.values_len; ++i) {
-            svc.resp.values[i].value = t.values[i]; 
-            svc.resp.values[i].value_len = strlen(t.values[i]);
+        if (t.error_msg)
+            message["response"]["error_message"] = t.error_msg;
+        else {
+            stringstream ss;
+            ss << "kernel request failed with " << state;
+            message["response"]["error_message"] = ss.str(); 
         }
-    }
-    
-    req.respond();
 
-    if(svc.resp.error_message)
-        free(svc.resp.error_message);
-    
-    if(t.values) {
-        for(unsigned i = 0; i < t.keys_len; ++i)
-            if (t.values[i])
-                free(t.values[i]);
-        delete[] t.values;
-    }
-    
-    if(svc.resp.values)
-        delete[] svc.resp.values;
-    
-    return 0;
-}
+        return 0;        
+    } 
 
-
-int key_value::on_write(ln::service_request& req, ln_service_robotkernel_key_value_write& svc) {
-    memset(&svc.resp, 0, sizeof(svc.resp));
-    
-    if(svc.req.keys_len != svc.req.values_len) {
-        ln::string_buffer error_msg(
-            &svc.resp.error_message,
-            format_string("error keys_len is %d, values_len is %d!",
-                          svc.req.keys_len,
-                          svc.req.values_len));
-        req.respond();
-        return 0;
-    }
-    
-    key_value_transfer_t t;
-    memset(&t, 0, sizeof(t));
-    t.slave_id = slave_id;
-    t.command = kvc_write;
-    t.keys = svc.req.keys;
-    t.keys_len = svc.req.keys_len;
-    t.values = new char*[svc.req.values_len];
-    t.values_len = svc.req.values_len;
-    
-    for (unsigned i = 0; i < t.values_len; ++i)
-        t.values[i] = strndup(svc.req.values[i].value, svc.req.values[i].value_len);
-
-    int state = kernel::request_cb(mod_name.c_str(), MOD_REQUEST_KEY_VALUE_TRANSFER, (void *)&t);
-
-    if (state != 0) {
-        // error!
-        if(t.error_msg)
-            svc.resp.error_message = t.error_msg;
-        else
-            svc.resp.error_message = strdup(format_string("kernel request failed with %d", state).c_str());
-        svc.resp.error_message_len = strlen(svc.resp.error_message);
-    }
-    
-    req.respond();
-
-    for (unsigned i = 0; i < t.values_len; ++i)
+    for (unsigned i = 0; i < t.values_len; ++i) {
+        values[i] = string(t.values[i]);
+            
         if (t.values[i])
             free(t.values[i]);
+    }
+
     delete[] t.values;
-    
-    if (svc.resp.error_message)
-        free(svc.resp.error_message);
+
+    message["response"]["values"] = values;
 
     return 0;
 }
-        
-int key_value::on_list(ln::service_request& req, ln_service_robotkernel_key_value_list& svc) {
-    memset(&svc.resp, 0, sizeof(svc.resp));
+
+const std::string key_value::service_definition_read = 
+    "request:\n"
+    "   uint32_t*: keys\n"
+    "response:\n"
+    "   string*: values\n"
+    "   string: error_message\n";
+
+//! service callback key-value write
+/*!
+ * \param message service message
+ * \return success
+ */
+int key_value::service_write(YAML::Node& message) {
+    // vectors for keys and values
+    std::vector<uint32_t> keys = 
+        get_as<std::vector<uint32_t> >(message["request"], "keys");    
+    std::vector<string> values = 
+        get_as<std::vector<string> >(message["request"], "values");
     
+    // default response values
+    message["response"]["error_message"] = "";
+
+    if (keys.size() != values.size()) {
+        stringstream ss;
+        ss << "error keys_len is " << keys.size() 
+            << ", values_len is " << + values.size();
+        message["response"]["error_message"] = ss.str();
+        return 0;
+    }
+
+    key_value_transfer_t t;
+    memset(&t, 0, sizeof(t));
+    t.slave_id      = slave_id;
+    t.command       = kvc_write;
+    t.keys          = &keys[0];
+    t.keys_len      = keys.size();
+    t.values        = new char*[keys.size()];
+    t.values_len    = keys.size();
+
+    for (unsigned i = 0; i < t.values_len; ++i)
+        t.values[i] = strdup(values[i].c_str());
+
+    int state = kernel::request_cb(mod_name.c_str(), 
+            MOD_REQUEST_KEY_VALUE_TRANSFER, (void *)&t);
+    
+    if (state != 0) {
+        // error!
+        if (t.error_msg)
+            message["response"]["error_message"] = t.error_msg;
+        else {
+            stringstream ss;
+            ss << "kernel request failed with " << state;
+            message["response"]["error_message"] = ss.str();
+        }
+
+        return 0;        
+    } 
+
+    for (unsigned i = 0; i < t.values_len; ++i) {
+        values[i] = string(t.values[i]);
+            
+        if (t.values[i])
+            free(t.values[i]);
+    }
+
+    delete[] t.values;
+
+    return 0;
+}
+
+const std::string key_value::service_definition_write = 
+    "request:\n"
+    "   uint32_t*: keys\n"
+    "   string*: values\n"
+    "response:\n"
+    "   string: error_message\n";
+
+//! service callback key-value list
+/*!
+ * \param message service message
+ * \return success
+ */
+int key_value::service_list(YAML::Node& message) {
+    std::vector<uint32_t> keys;
+    std::vector<string> names;
+
+    // default response values
+    message["response"]["keys"] = keys;
+    message["response"]["names"] = names;
+    message["response"]["error_message"] = "";
+
     key_value_transfer_t t;
     memset(&t, 0, sizeof(t));
     t.slave_id = slave_id;
     t.command = kvc_list;
     
-    int state = kernel::request_cb(mod_name.c_str(), MOD_REQUEST_KEY_VALUE_TRANSFER, (void *)&t);
+    int state = kernel::request_cb(mod_name.c_str(), 
+            MOD_REQUEST_KEY_VALUE_TRANSFER, (void *)&t);
 
     if (state != 0) {
         // error!
-        if(t.error_msg)
-            svc.resp.error_message = t.error_msg;
-        else
-            svc.resp.error_message = strdup(format_string("kernel request failed with %d", state).c_str());
-        svc.resp.error_message_len = strlen(svc.resp.error_message);
-        log(error, "%d: %s\n", state, svc.resp.error_message);
-    } else {
-        svc.resp.keys = t.keys;
-        svc.resp.keys_len = t.keys_len;
-
-        svc.resp.names_len = t.values_len;
-        svc.resp.names = new _robotkernel_key_value_list_string[svc.resp.names_len];
-        for (unsigned i = 0; i < svc.resp.names_len; ++i) {
-            svc.resp.names[i].value = t.values[i]; 
-            svc.resp.names[i].value_len = strlen(t.values[i]);
+        if (t.error_msg)
+            message["response"]["error_message"] = t.error_msg;
+        else {
+            stringstream ss;
+            ss << "kernel request failed with " << state;
+            message["response"]["error_message"] = ss.str(); 
         }
+    } else {
+        keys.assign(t.keys, t.keys + t.keys_len);
+        names.resize(t.values_len);
+
+        for (unsigned i = 0; i < t.values_len; ++i) {
+            names[i] = string(t.values[i]); 
+        }
+    
+        message["response"]["keys"] = keys;
+        message["response"]["names"] = names;
     }
     
-    req.respond();
-
-    if (svc.resp.error_message)
-        free(svc.resp.error_message);
-
     if (t.keys)
         free(t.keys);
 
@@ -217,9 +255,12 @@ int key_value::on_list(ln::service_request& req, ln_service_robotkernel_key_valu
         if (t.values[i])
             free(t.values[i]);
 
-    if(svc.resp.names)
-        delete[] svc.resp.names;
-    
     return 0;
 }
+
+const std::string key_value::service_definition_list =
+    "response:\n"
+    "   uint32_t*: keys\n"
+    "   string*: names\n"
+    "   string: error_message\n";
 

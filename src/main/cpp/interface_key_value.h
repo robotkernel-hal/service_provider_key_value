@@ -27,41 +27,42 @@
 #ifndef __INTERFACE_KEY_VALUE_H__
 #define __INTERFACE_KEY_VALUE_H__
 
+#include <robotkernel/kernel.h>
 #include <robotkernel/interface_base.h>
 
-#include <stdint.h>
-#include <ln_cppwrapper.h>
-
 namespace interface_key_value {
-
-#define LN_UNREGISTER_SERVICE_IN_BASE_DETOR  
-#include "ln_messages.h"
-#undef LN_UNREGISTER_SERVICE_IN_BASE_DETOR
     
-class key_value : 
-    public robotkernel::interface_base,
-    public ln_service_read_base,
-    public ln_service_write_base,
-    public ln_service_list_base 
-{
+class key_value : public robotkernel::interface_base {
     public:
         //! default construction
         /*!
          * \param node configuration node
          */
         key_value(const YAML::Node& node);
+        
+        //! service callback key-value read
+        /*!
+         * \param message service message
+         * \return success
+         */
+        int service_read(YAML::Node& message);
+        static const std::string service_definition_read;
 
-        //! service reading key value pairs
-        int on_read(ln::service_request& req, 
-                ln_service_robotkernel_key_value_read& svc);
-
-        //! service writing key value pairs
-        int on_write(ln::service_request& req, 
-                ln_service_robotkernel_key_value_write& svc);
-
-        //! service listing key value pairs
-        int on_list(ln::service_request& req, 
-                ln_service_robotkernel_key_value_list& svc);
+        //! service callback key-value write
+        /*!
+         * \param message service message
+         * \return success
+         */
+        int service_write(YAML::Node& message);
+        static const std::string service_definition_write;
+        
+        //! service callback key-value list
+        /*!
+         * \param message service message
+         * \return success
+         */
+        int service_list(YAML::Node& message);
+        static const std::string service_definition_list;
 };
 
 } // namespace interface
