@@ -90,28 +90,20 @@ public:
 	std::string name;
 	unsigned int slave_id;
 
-	robotkernel::kernel::interface_id_t interface_id;
-
 	key_value_slave();
 	~key_value_slave();
 	
 	void do_unregister() {
-		if(interface_id)
-			robotkernel::kernel::unregister_interface_cb(interface_id);
-		interface_id = NULL;
+		robotkernel::kernel& k = *robotkernel::kernel::get_instance();
+		k.remove_service_requester("key_value", module->name, slave_id);
 	}
 	void do_register(const robotkernel::loglevel& ll) {
 		if(!module)
 			throw str_exception_tb("module is NULL - make sure to call key_value_module::add_key_value_slave() before key_value_slave::do_register()!");
 		do_unregister();
 
-		YAML::Node node;
-		node["mod_name"] = module->name;
-		node["dev_name"] = name;
-		node["slave_id"] = slave_id;
-		node["loglevel"] = (string)ll;
-		interface_id = robotkernel::kernel::register_interface_cb(
-			"libinterface_key_value.so", node);
+		robotkernel::kernel& k = *robotkernel::kernel::get_instance();
+		k.add_service_requester("key_value", module->name, name, slave_id);
 	}
 	
 	void check_exists(std::string name) {

@@ -12,6 +12,6 @@ C_LIBS              = key_value_helper
 
 [install]
 build/${ARCH}/install/lib => lib/${ARCH}
-build/sled11-x86-gcc4.x/install/include/@PACKAGE@ => include/@PACKAGE@
+build/osl42-x86_64/install/include/@PACKAGE@ => include/@PACKAGE@
 doc/ => doc/
 share/ => share/

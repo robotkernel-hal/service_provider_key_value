@@ -27,43 +27,81 @@
 #ifndef __INTERFACE_KEY_VALUE_H__
 #define __INTERFACE_KEY_VALUE_H__
 
-#include <robotkernel/kernel.h>
-#include <robotkernel/interface_base.h>
+#include "robotkernel/service_provider_base.h"
+#include "robotkernel/service_provider_intf.h"
+#include "robotkernel/service.h"
+#include "robotkernel/kernel.h"
+#include "robotkernel/log_base.h"
 
 namespace interface_key_value {
-    
-class key_value : public robotkernel::interface_base {
-    public:
-        //! default construction
-        /*!
-         * \param node configuration node
-         */
-        key_value(const YAML::Node& node);
-        
-        //! service callback key-value read
-        /*!
-         * \param message service message
-         * \return success
-         */
-        int service_read(YAML::Node& message);
-        static const std::string service_definition_read;
+	extern const char* key_value_sp_magic;
 
-        //! service callback key-value write
-        /*!
-         * \param message service message
-         * \return success
-         */
-        int service_write(YAML::Node& message);
-        static const std::string service_definition_write;
-        
-        //! service callback key-value list
-        /*!
-         * \param message service message
-         * \return success
-         */
-        int service_list(YAML::Node& message);
-        static const std::string service_definition_list;
-};
+	// forward declaration
+	class key_value_handler;
+
+	class key_value : 
+		public robotkernel::service_provider_base<key_value_handler> {
+		public:
+			//! default construction
+			/*!
+			 * \param node configuration node
+			 */
+			key_value()
+				: service_provider_base("key_value") {};
+
+			~key_value() {};
+
+			//! service provider magic 
+			/*!
+			 * \return return service provider magic string
+			 */
+			const char* get_sp_magic() 
+			{ return key_value_sp_magic; };
+	};
+	
+	class key_value_handler : public robotkernel::log_base {
+		public:
+			std::string mod_name;	//!< slave owner module
+			std::string dev_name;	//!< service device name
+			int slave_id;			//!< slave identifier
+
+			//! handler construction
+			key_value_handler(std::string mod_name, std::string dev_name, 
+					int slave_id);
+			
+			//! handler destruction
+			~key_value_handler();
+
+			//! service callback key-value read
+			/*!
+			 * \param request service request data
+			 * \parma response service response data
+			 * \return success
+			 */
+			int service_read(const robotkernel::service_arglist_t& request, 
+					robotkernel::service_arglist_t& response);
+			static const std::string service_definition_read;
+
+			//! service callback key-value write
+			/*!
+			 * \param request service request data
+			 * \parma response service response data
+			 * \return success
+			 */
+			int service_write(const robotkernel::service_arglist_t& request, 
+					robotkernel::service_arglist_t& response);
+			static const std::string service_definition_write;
+
+			//! service callback key-value list
+			/*!
+			 * \param request service request data
+			 * \parma response service response data
+			 * \return success
+			 */
+			int service_list(const robotkernel::service_arglist_t& request, 
+					robotkernel::service_arglist_t& response);
+			static const std::string service_definition_list;
+	};
 
 } // namespace interface
 

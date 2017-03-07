@@ -151,7 +151,6 @@ std::string key_value_repr<string>(string& value) {
 
 
 key_value_slave::key_value_slave() {
-	interface_id = NULL;
 	module = NULL;
 }
 key_value_slave::~key_value_slave() {
