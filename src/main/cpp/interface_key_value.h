@@ -40,7 +40,7 @@ namespace interface_key_value {
 	class key_value_handler;
 
 	class key_value : 
-		public robotkernel::service_provider_base<key_value_handler> {
+		public robotkernel::service_provider_base<key_value_handler, base> {
 		public:
 			//! default construction
 			/*!
