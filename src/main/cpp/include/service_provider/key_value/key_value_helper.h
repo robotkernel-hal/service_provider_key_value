@@ -5,7 +5,8 @@
 #include <string>
 #include <list>
 #include <map>
-#include <interface_key_value/module_intf.h>
+
+#include "service_provider/key_value/base.h"
 
 #include <string_util/string_util.h>
 
@@ -135,10 +136,10 @@ public:
 		check_exists(name);
 		_add_key(new key_value_key<float>(this, name, value, after_change_cb));
 	}
-	void add_key_string(std::string name, string* value, string init, bool after_change_cb=false) {
+	void add_key_string(std::string name, std::string* value, std::string init, bool after_change_cb=false) {
 		*value = init;
 		check_exists(name);
-		_add_key(new key_value_key<string>(this, name, value, after_change_cb));
+		_add_key(new key_value_key<std::string>(this, name, value, after_change_cb));
 	}
 };
 
