@@ -4,6 +4,7 @@
 #include <service_provider/key_value/key_value_helper.h>
 
 using namespace std;
+using namespace string_util;
 
 key_value_module::key_value_module(string name) : name(name) {
 	
@@ -33,6 +34,7 @@ void key_value_module::debug(const char *format, ...) {
 }
 
 void key_value_module::handle_key_value_request(void* ptr) {
+    /*
 	key_value_transfer_t* t = (key_value_transfer_t*)ptr;
 	t->error_msg = NULL;
 
@@ -105,6 +107,7 @@ void key_value_module::handle_key_value_request(void* ptr) {
 		t->error_msg = strdup(msg.c_str());
 		return;
 	}
+    */
 }
 
 void key_value_key_base::set_value(std::string repr) {
@@ -150,7 +153,9 @@ std::string key_value_repr<string>(string& value) {
 }
 
 
-key_value_slave::key_value_slave() {
+key_value_slave::key_value_slave(const std::string& owner, const std::string& service_prefix)
+    : robotkernel::service_requester_base(owner, service_prefix) 
+{
 	module = NULL;
 }
 key_value_slave::~key_value_slave() {

@@ -80,7 +80,8 @@ public:
 	}
 };
 
-class key_value_slave {
+class key_value_slave : public robotkernel::service_requester_base,
+    public std::enable_shared_from_this<key_value_slave> {
 public:
 	typedef std::vector<key_value_key_base*> keys_t;
 	keys_t keys;
@@ -91,12 +92,12 @@ public:
 	std::string name;
 	unsigned int slave_id;
 
-	key_value_slave();
+	key_value_slave(const std::string& owner, const std::string& service_prefix);
 	~key_value_slave();
 	
 	void do_unregister() {
 		robotkernel::kernel& k = *robotkernel::kernel::get_instance();
-		k.remove_service_requester("key_value", module->name, slave_id);
+		k.remove_service_requester(shared_from_this());
 	}
 	void do_register(const robotkernel::loglevel& ll) {
 		if(!module)
@@ -104,12 +105,12 @@ public:
 		do_unregister();
 
 		robotkernel::kernel& k = *robotkernel::kernel::get_instance();
-		k.add_service_requester("key_value", module->name, name, slave_id);
+		k.add_service_requester(shared_from_this());
 	}
 	
 	void check_exists(std::string name) {
 		if(key_map.find(name) != key_map.end())
-			throw str_exception_tb("key %s already defined!", repr(name).c_str());
+			throw str_exception_tb("key %s already defined!", string_util::repr(name).c_str());
 	}
 	void _add_key(key_value_key_base* new_key) {
 		keys.push_back(new_key);
