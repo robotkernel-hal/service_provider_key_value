@@ -41,8 +41,8 @@ using namespace service_provider;
 using namespace string_util;
 
 //! handler construction
-key_value::handler::handler(const robotkernel::sp_service_requester_t& req)
-    : log_base("key_value", req->owner + "." + req->service_prefix + ".key_value") {
+key_value::handler::handler(const robotkernel::sp_service_collector_device_t& req)
+    : log_base("key_value", req->owner + "." + req->device_name + ".key_value") {
     robotkernel::kernel& k = *robotkernel::kernel::get_instance();
 
     _instance = std::dynamic_pointer_cast<service_provider::key_value::base>(req);
@@ -50,7 +50,7 @@ key_value::handler::handler(const robotkernel::sp_service_requester_t& req)
         throw str_exception("wrong base class");
 
     stringstream base;
-    base << _instance->owner << "." << _instance->service_prefix << ".key_value.";
+    base << _instance->owner << "." << _instance->device_name << ".key_value.";
 
     k.add_service(_instance->owner, base.str() + "read", service_definition_read,
             std::bind(&key_value::handler::service_read, this, _1, _2));
@@ -65,7 +65,7 @@ key_value::handler::~handler() {
     kernel& k = *kernel::get_instance();
 
     stringstream base;
-    base << _instance->owner << "." << _instance->service_prefix << ".key_value.";
+    base << _instance->owner << "." << _instance->device_name << ".key_value.";
     k.remove_service(base.str() + "read");
     k.remove_service(base.str() + "write");
     k.remove_service(base.str() + "list");

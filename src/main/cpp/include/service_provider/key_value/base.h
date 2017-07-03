@@ -27,47 +27,61 @@
 
 #include <list>
 
-#include "robotkernel/service_requester_base.h"
+#include "robotkernel/service_collector_device.h"
 
 namespace service_provider {
+#ifdef EMACS
+}
+#endif
 
-    namespace key_value {
+namespace key_value {
+#ifdef EMACS
+}
+#endif
 
-        typedef struct key_value_transfer {
-            std::vector<uint32_t> keys;    
-            std::vector<std::string> values;
-        } key_value_transfer_t;
+typedef struct key_value_transfer {
+    std::vector<uint32_t> keys;    
+    std::vector<std::string> values;
+} key_value_transfer_t;
 
-        class base : public robotkernel::service_requester_base {
-            public:
-                //! construction
-                base(std::string owner, std::string service_prefix)
-                : robotkernel::service_requester_base(owner, service_prefix) {};
+class base : 
+    public robotkernel::service_collector_device
+{
+    public:
+        //! construction
+        base(std::string owner, std::string service_prefix)
+            : robotkernel::service_collector_device(owner, service_prefix) {};
 
-                //! destruction
-                virtual ~base() = 0;
+        //! destruction
+        virtual ~base() = 0;
 
-                //! read key value pairs
-                /*!
-                 * \param transfer request
-                 */
-                virtual void key_value_read(key_value_transfer_t& transfer);
+        //! read key value pairs
+        /*!
+         * \param transfer request
+         */
+        virtual void key_value_read(key_value_transfer_t& transfer);
 
-                //! write key value pairs
-                /*!
-                 * \param transfer request
-                 */
-                virtual void key_value_write(const key_value_transfer_t& transfer);
+        //! write key value pairs
+        /*!
+         * \param transfer request
+         */
+        virtual void key_value_write(const key_value_transfer_t& transfer);
 
-                //! list keys with names
-                /*!
-                 * \param transfer request
-                 */
-                virtual void key_value_list(key_value_transfer_t& transfer);
-        };
+        //! list keys with names
+        /*!
+         * \param transfer request
+         */
+        virtual void key_value_list(key_value_transfer_t& transfer);
+};
 
-    }; // namespace key_value
+#ifdef EMACS
+{
+#endif
+}; // namespace key_value
 
+#ifdef EMACS
+{
+#endif
 }; // namespace service_provider
 
 #endif // __SERVICE_PROVIDER__KEY_VALUE__BASE__H__

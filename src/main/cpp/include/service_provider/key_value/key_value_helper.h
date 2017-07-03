@@ -80,7 +80,7 @@ public:
 	}
 };
 
-class key_value_slave : public robotkernel::service_requester_base,
+class key_value_slave : public robotkernel::service_collector_device,
     public std::enable_shared_from_this<key_value_slave> {
 public:
 	typedef std::vector<key_value_key_base*> keys_t;
@@ -97,7 +97,7 @@ public:
 	
 	void do_unregister() {
 		robotkernel::kernel& k = *robotkernel::kernel::get_instance();
-		k.remove_service_requester(shared_from_this());
+		k.remove_device(shared_from_this());
 	}
 	void do_register(const robotkernel::loglevel& ll) {
 		if(!module)
@@ -105,7 +105,7 @@ public:
 		do_unregister();
 
 		robotkernel::kernel& k = *robotkernel::kernel::get_instance();
-		k.add_service_requester(shared_from_this());
+		k.add_device(shared_from_this());
 	}
 	
 	void check_exists(std::string name) {

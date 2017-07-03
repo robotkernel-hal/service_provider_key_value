@@ -154,7 +154,7 @@ std::string key_value_repr<string>(string& value) {
 
 
 key_value_slave::key_value_slave(const std::string& owner, const std::string& service_prefix)
-    : robotkernel::service_requester_base(owner, service_prefix) 
+    : robotkernel::service_collector_device(owner, service_prefix) 
 {
 	module = NULL;
 }
