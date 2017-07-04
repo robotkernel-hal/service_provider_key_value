@@ -27,7 +27,7 @@
 
 #include <list>
 
-#include "robotkernel/service_collector_device.h"
+#include "robotkernel/service_interface.h"
 
 namespace service_provider {
 #ifdef EMACS
@@ -45,12 +45,12 @@ typedef struct key_value_transfer {
 } key_value_transfer_t;
 
 class base : 
-    public robotkernel::service_collector_device
+    public robotkernel::service_interface
 {
     public:
         //! construction
         base(std::string owner, std::string service_prefix)
-            : robotkernel::service_collector_device(owner, service_prefix) {};
+            : robotkernel::service_interface(owner, service_prefix) {};
 
         //! destruction
         virtual ~base() = 0;

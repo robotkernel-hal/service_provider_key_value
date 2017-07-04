@@ -80,8 +80,10 @@ public:
 	}
 };
 
-class key_value_slave : public robotkernel::service_collector_device,
-    public std::enable_shared_from_this<key_value_slave> {
+class key_value_slave : 
+    public robotkernel::service_interface,
+    public std::enable_shared_from_this<key_value_slave> 
+{
 public:
 	typedef std::vector<key_value_key_base*> keys_t;
 	keys_t keys;
