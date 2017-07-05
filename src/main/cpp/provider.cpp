@@ -49,26 +49,20 @@ key_value::handler::handler(const robotkernel::sp_service_interface_t& req)
     if (!_instance)
         throw str_exception("wrong base class");
 
-    stringstream base;
-    base << _instance->device_name << ".key_value.";
-
-    k.add_service(_instance->owner, base.str() + "read", service_definition_read,
+    k.add_service(_instance->owner, _instance->device_name + ".read", service_definition_read,
             std::bind(&key_value::handler::service_read, this, _1, _2));
-    k.add_service(_instance->owner, base.str() + "write", service_definition_write,
+    k.add_service(_instance->owner, _instance->device_name + ".write", service_definition_write,
             std::bind(&key_value::handler::service_write, this, _1, _2));
-    k.add_service(_instance->owner, base.str() + "list", service_definition_list,
+    k.add_service(_instance->owner, _instance->device_name + ".list", service_definition_list,
             std::bind(&key_value::handler::service_list, this, _1, _2));
 }
 
 //! handler destruction
 key_value::handler::~handler() {
     kernel& k = *kernel::get_instance();
-
-    stringstream base;
-    base << _instance->device_name << ".key_value.";
-    k.remove_service(_instance->owner, base.str() + "read");
-    k.remove_service(_instance->owner, base.str() + "write");
-    k.remove_service(_instance->owner, base.str() + "list");
+    k.remove_service(_instance->owner, _instance->device_name + ".read");
+    k.remove_service(_instance->owner, _instance->device_name + ".write");
+    k.remove_service(_instance->owner, _instance->device_name + ".list");
 };
 
 //! service callback key-value read

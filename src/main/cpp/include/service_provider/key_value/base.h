@@ -50,7 +50,7 @@ class base :
     public:
         //! construction
         base(std::string owner, std::string service_prefix)
-            : robotkernel::service_interface(owner, service_prefix) {};
+            : robotkernel::service_interface(owner, service_prefix + ".key_value") {};
 
         //! destruction
         virtual ~base() = 0;
