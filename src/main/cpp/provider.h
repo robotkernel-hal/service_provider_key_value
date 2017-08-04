@@ -98,6 +98,16 @@ class handler : public robotkernel::log_base {
         int service_list(const robotkernel::service_arglist_t& request, 
                 robotkernel::service_arglist_t& response);
         static const std::string service_definition_list;
+        
+        //! service callback key-value list descriptions
+        /*!
+         * \param request service request data
+         * \parma response service response data
+         * \return success
+         */
+        int service_list_descriptions(const robotkernel::service_arglist_t& request, 
+                robotkernel::service_arglist_t& response);
+        static const std::string service_definition_list_descriptions;
 };
 
 #ifdef EMACS

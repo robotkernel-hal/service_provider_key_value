@@ -26,6 +26,7 @@
 #define __SERVICE_PROVIDER__KEY_VALUE__BASE__H__
 
 #include <list>
+#include <vector>
 
 #include "robotkernel/service_interface.h"
 
@@ -43,6 +44,14 @@ typedef struct key_value_transfer {
     std::vector<uint32_t> keys;    
     std::vector<std::string> values;
 } key_value_transfer_t;
+
+typedef struct key_value_list_description {
+    string description;
+    string unit;
+    string default_value;
+    string format;
+    uint8_t read_only;
+} key_value_list_description_t;
 
 class base : 
     public robotkernel::service_interface
@@ -72,6 +81,12 @@ class base :
          * \param transfer request
          */
         virtual void key_value_list(key_value_transfer_t& transfer);
+	
+        //! list descriptions
+        /*!
+         * \param data request
+         */
+        virtual void key_value_list_descriptions(std::vector<key_value_list_descriptions_t>& data);
 };
 
 #ifdef EMACS

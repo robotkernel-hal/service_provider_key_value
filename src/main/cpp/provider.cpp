@@ -55,6 +55,8 @@ key_value::handler::handler(const robotkernel::sp_service_interface_t& req)
             std::bind(&key_value::handler::service_write, this, _1, _2));
     k.add_service(_instance->owner, _instance->device_name + ".list", service_definition_list,
             std::bind(&key_value::handler::service_list, this, _1, _2));
+    k.add_service(_instance->owner, _instance->device_name + ".list_descriptions", service_definition_list_descriptions,
+            std::bind(&key_value::handler::service_list_descriptions, this, _1, _2));
 }
 
 //! handler destruction
@@ -63,6 +65,7 @@ key_value::handler::~handler() {
     k.remove_service(_instance->owner, _instance->device_name + ".read");
     k.remove_service(_instance->owner, _instance->device_name + ".write");
     k.remove_service(_instance->owner, _instance->device_name + ".list");
+    k.remove_service(_instance->owner, _instance->device_name + ".list_descriptions");
 };
 
 //! service callback key-value read
@@ -185,4 +188,66 @@ const std::string key_value::handler::service_definition_list =
 "   uint32_t*: keys\n"
 "   string*: names\n"
 "   string: error_message\n";
+
+//! service callback descriptions
+/*!
+ * \param request service request data
+ * \parma response service response data
+ * \return success
+ */
+int key_value::handler::service_list_descriptions(const robotkernel::service_arglist_t& request, 
+        robotkernel::service_arglist_t& response) {
+    std::vector<rk_type> description;
+    std::vector<rk_type> unit;
+    std::vector<rk_type> default_value;
+    std::vector<rk_type> format;
+    std::vector<rk_type> read_only;
+    string error_message = "";
+
+    std::vector<key_value_list_descriptions_t> t;
+    
+    try { 
+        _instance->key_value_list_descriptions(t);
+
+        description.resize(t.size());
+        unit.resize(t.size());
+        default_value.resize(t.size());
+        format.resize(t.size());
+        read_only.resize(t.size());
+
+        for (int i = 0; i < t.size(); ++i) {
+            description[i]   = t[i].description;
+            unit[i]          = t[i].unit;
+            default_value[i] = t[i].default_value;
+            format[i]        = t[i].format;
+            read_only[i]     = t[i].read_only;
+        }
+    } catch (std::exception& e) {
+        error_message = e.what();
+    }
+
+#define LIST_DESCRIPTIONS_RESP_DESCRIPTION          0
+#define LIST_DESCRIPTIONS_RESP_UNIT                 1
+#define LIST_DESCRIPTIONS_RESP_DEFAULT_VALUE        2
+#define LIST_DESCRIPTIONS_RESP_FORMAT               3
+#define LIST_DESCRIPTIONS_RESP_READ_ONLY            4
+#define LIST_DESCRIPTIONS_RESP_ERROR_MESSAGE        5
+    response.resize(6);
+    response[LIST_DESCRIPTIONS_RESP_DESCRIPTION]     = description;
+    response[LIST_DESCRIPTIONS_RESP_UNIT]            = unit;
+    response[LIST_DESCRIPTIONS_RESP_DEFAULT_VALUE]   = default_value;
+    response[LIST_DESCRIPTIONS_RESP_FORMAT]          = format;
+    response[LIST_DESCRIPTIONS_RESP_READ_ONLY]       = read_only;
+    response[LIST_DESCRIPTIONS_RESP_ERROR_MESSAGE]   = error_message;
+
+    return 0;
+}
+
+const std::string key_value::handler::service_definition_list_descriptions =
+"response:\n"
+"   vector/string: description\n"
+"   vector/string: unit\n"
+"   vector/string: default_value\n"
+"   vector/string: format\n"
+"   vector/uint8_t: read_only\n";
 

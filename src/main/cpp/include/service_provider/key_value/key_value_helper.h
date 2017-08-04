@@ -22,7 +22,7 @@ public:
 	key_value_module(std::string name);
 	
 	void add_key_value_slave(key_value_slave* slave, std::string name, unsigned int slave_id);
-	void handle_key_value_request(void* ptr);
+	int handle_key_value_request(void* ptr);
 
 	void log(robotkernel::loglevel lvl, const char *format, ...);
 	void debug(const char *format, ...);
@@ -34,6 +34,8 @@ public:
 	key_value_slave* parent;
 	std::string name;
 	bool after_change_cb;
+
+	key_value_description_t description; // if contents are set, they will be free()'d from this detor!
 	
 	key_value_key_base(key_value_slave* parent, std::string name, bool after_change_cb);
 	virtual ~key_value_key_base();
@@ -43,12 +45,16 @@ public:
 	void set_value(std::string repr);
 	virtual std::string get_value() = 0;
 	virtual void* get_void_pointer() = 0;
+
+	virtual key_value_key_base& describe(string desc);
+	virtual key_value_key_base& unit(string unit);
+	virtual key_value_key_base& default_value(string default_value);
+	virtual key_value_key_base& format(string format);
+	virtual key_value_key_base& read_only(bool is_read_only) { description.read_only = is_read_only; return *this; }
 };
 
-template <typename T>
-void key_value_eval(T* ptr, std::string repr);
-template <typename T>
-std::string key_value_repr(T& ptr);
+template <typename T> void key_value_eval(T* ptr, std::string repr);
+template <typename T> std::string key_value_repr(T& ptr);
 
 template <typename T>
 class key_value_key : public key_value_key_base {	
@@ -116,7 +122,7 @@ public:
 	}
 	void _add_key(key_value_key_base* new_key) {
 		keys.push_back(new_key);
-		key_map[name] = new_key;
+		key_map[new_key->name] = new_key;
 	}
 
 	void delete_keys();

@@ -66,6 +66,7 @@ void key_value_module::handle_key_value_request(void* ptr) {
 			if(!t->values)
 				throw str_exception_tb("key_value_transfer_t::values is NULL!");
 			memset(t->values, 0, t->values_len * sizeof(char*));
+			t->values_len = 0; // if exception happens after this we do not signal valid values...
 		
 			for(unsigned int i = 0; i < t->keys_len; ++i) {
 				unsigned int k = t->keys[i];
@@ -75,6 +76,7 @@ void key_value_module::handle_key_value_request(void* ptr) {
 
 				t->values[i] = strdup(key->get_value().c_str());
 			}
+			t->values_len = t->keys_len; // values valid now
 			break;
 		}
 		case kvc_write: {
@@ -97,6 +99,19 @@ void key_value_module::handle_key_value_request(void* ptr) {
 			}
 			break;
 		}
+		case kvc_list_descriptions: {
+			debug("list_descriptions %d\n", t->slave_id);
+		
+			t->keys_len = slave->keys.size();
+			t->descriptions = (key_value_description_t*)malloc(sizeof(key_value_description_t) * t->keys_len);
+		
+			for(unsigned int k = 0; k < t->keys_len; k++) {
+				key_value_key_base* key = slave->keys[k];
+				t->descriptions[k] = key->description;
+			}
+			break;
+		}
+			
 		default:
 			throw str_exception_tb("invalid key_value_command: %d", t->command);
 		}
@@ -105,9 +120,10 @@ void key_value_module::handle_key_value_request(void* ptr) {
 		string msg = format_string("%s: key_value error:\n%s", name.c_str(), e.what());
 		log(robotkernel::error, "%s\n", msg.c_str());
 		t->error_msg = strdup(msg.c_str());
-		return;
+		return -1;
 	}
     */
+	return 0;
 }
 
 void key_value_key_base::set_value(std::string repr) {
@@ -130,12 +146,19 @@ void key_value_eval<float>(float* ptr, std::string repr) {
 	*ptr = atof(repr.c_str());
 }
 template<>
+void key_value_eval<int>(int* ptr, std::string repr) {
+	*ptr = atoi(repr.c_str());
+}
+template<>
+void key_value_eval<unsigned int>(unsigned int* ptr, std::string repr) {
+	*ptr = (unsigned int)strtol(repr.c_str(), (char**)NULL, 10);
+}
+template<>
 void key_value_eval<string>(string* ptr, std::string repr) {
 	py_value* v = eval_full(repr);
 	*ptr = string(*v);
 	delete v;
 }
-
 
 template<>
 std::string key_value_repr<bool>(bool& value) {
@@ -146,6 +169,14 @@ std::string key_value_repr<bool>(bool& value) {
 template<>
 std::string key_value_repr<float>(float& value) {
 	return format_string("%f", value);
+}
+template<>
+std::string key_value_repr<int>(int& value) {
+	return format_string("%d", value);
+}
+template<>
+std::string key_value_repr<unsigned int>(unsigned int& value) {
+	return format_string("%u", value);
 }
 template<>
 std::string key_value_repr<string>(string& value) {
@@ -172,6 +203,46 @@ void key_value_slave::delete_keys() {
 
 key_value_key_base::key_value_key_base(key_value_slave* parent, std::string name, bool after_change_cb)
 	: parent(parent), name(name), after_change_cb(after_change_cb) {
+	memset(&description, 0, sizeof(description));
 }
 key_value_key_base::~key_value_key_base() {
+#define free_description_if_set(field)		\
+	if(description.field)			\
+		free((void*)description.field);
+	
+	free_description_if_set(description);
+	free_description_if_set(unit);
+	free_description_if_set(default_value);
+	free_description_if_set(format);	
 }
+
+key_value_key_base& key_value_key_base::describe(string desc) {
+	if(description.description)
+		free((void*)description.description);
+	description.description = strdup(desc.c_str());
+	return *this;
+}
+
+key_value_key_base& key_value_key_base::unit(string unit) {
+	if(description.unit)
+		free((void*)description.unit);
+	description.unit = strdup(unit.c_str());
+	return *this;
+}
+
+key_value_key_base& key_value_key_base::default_value(string default_value) {
+	if(description.default_value)
+		free((void*)description.default_value);
+	description.default_value = strdup(default_value.c_str());
+	return *this;
+
+}
+
+key_value_key_base& key_value_key_base::format(string format) {
+	if(description.format)
+		free((void*)description.format);
+	description.format = strdup(format.c_str());
+	return *this;
+
+}
+
