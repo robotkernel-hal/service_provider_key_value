@@ -33,7 +33,7 @@ void key_value_module::debug(const char *format, ...) {
 	klog(robotkernel::verbose, "[key_value_helper|%s] %s", name.c_str(), buf);
 }
 
-void key_value_module::handle_key_value_request(void* ptr) {
+int key_value_module::handle_key_value_request(void* ptr) {
     /*
 	key_value_transfer_t* t = (key_value_transfer_t*)ptr;
 	t->error_msg = NULL;
@@ -210,38 +210,42 @@ key_value_key_base::~key_value_key_base() {
 	if(description.field)			\
 		free((void*)description.field);
 	
-	free_description_if_set(description);
-	free_description_if_set(unit);
-	free_description_if_set(default_value);
-	free_description_if_set(format);	
+	//free_description_if_set(description);
+	//free_description_if_set(unit);
+	//free_description_if_set(default_value);
+    //free_description_if_set(format);	
 }
 
 key_value_key_base& key_value_key_base::describe(string desc) {
-	if(description.description)
-		free((void*)description.description);
-	description.description = strdup(desc.c_str());
+	//if(description.description)
+	//	free((void*)description.description);
+	//description.description = strdup(desc.c_str());
+	description.description = desc;
 	return *this;
 }
 
 key_value_key_base& key_value_key_base::unit(string unit) {
-	if(description.unit)
-		free((void*)description.unit);
-	description.unit = strdup(unit.c_str());
-	return *this;
+	//if(description.unit)
+	//	free((void*)description.unit);
+	//description.unit = strdup(unit.c_str());
+    description.unit = unit;
+    return *this;
 }
 
 key_value_key_base& key_value_key_base::default_value(string default_value) {
-	if(description.default_value)
-		free((void*)description.default_value);
-	description.default_value = strdup(default_value.c_str());
+	//if(description.default_value)
+	//	free((void*)description.default_value);
+	//description.default_value = strdup(default_value.c_str());
+    description.default_value = default_value;
 	return *this;
 
 }
 
 key_value_key_base& key_value_key_base::format(string format) {
-	if(description.format)
-		free((void*)description.format);
-	description.format = strdup(format.c_str());
+	//if(description.format)
+	//	free((void*)description.format);
+	//description.format = strdup(format.c_str());
+    description.format = format;
 	return *this;
 
 }

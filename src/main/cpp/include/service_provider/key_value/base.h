@@ -45,13 +45,13 @@ typedef struct key_value_transfer {
     std::vector<std::string> values;
 } key_value_transfer_t;
 
-typedef struct key_value_list_description {
-    string description;
-    string unit;
-    string default_value;
-    string format;
+typedef struct key_value_description {
+    std::string description;
+    std::string unit;
+    std::string default_value;
+    std::string format;
     uint8_t read_only;
-} key_value_list_description_t;
+} key_value_description_t;
 
 class base : 
     public robotkernel::service_interface
@@ -86,7 +86,7 @@ class base :
         /*!
          * \param data request
          */
-        virtual void key_value_list_descriptions(std::vector<key_value_list_descriptions_t>& data);
+        virtual void key_value_list_descriptions(std::vector<key_value_description_t>& data);
 };
 
 #ifdef EMACS

@@ -39,6 +39,7 @@ using namespace std::placeholders;
 using namespace robotkernel;
 using namespace service_provider;
 using namespace string_util;
+using namespace key_value;
 
 //! handler construction
 key_value::handler::handler(const robotkernel::sp_service_interface_t& req)
@@ -204,7 +205,7 @@ int key_value::handler::service_list_descriptions(const robotkernel::service_arg
     std::vector<rk_type> read_only;
     string error_message = "";
 
-    std::vector<key_value_list_descriptions_t> t;
+    std::vector<key_value_description_t> t;
     
     try { 
         _instance->key_value_list_descriptions(t);
@@ -215,7 +216,7 @@ int key_value::handler::service_list_descriptions(const robotkernel::service_arg
         format.resize(t.size());
         read_only.resize(t.size());
 
-        for (int i = 0; i < t.size(); ++i) {
+        for (unsigned i = 0; i < t.size(); ++i) {
             description[i]   = t[i].description;
             unit[i]          = t[i].unit;
             default_value[i] = t[i].default_value;
