@@ -1,3 +1,29 @@
+//! robotkernel service provider key value helper
+/*!
+ * author: Florian Schmid <florian.schmidt@dlr.de>
+ * author: Robert Burger <robert.burger@dlr.de>
+ */
+
+// vim: tabstop=4 softtabstop=4 shiftwidth=4 expandtab:
+
+/*
+ * This file is part of robotkernel.
+ *
+ * robotkernel is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * robotkernel is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with robotkernel.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+
 #ifndef KEY_VALUE_HELPER_H
 #define KEY_VALUE_HELPER_H
 
@@ -11,23 +37,6 @@
 #include <string_util/string_util.h>
 
 class key_value_slave;
-
-class key_value_module {
-public:
-	typedef std::map<unsigned int, key_value_slave*> slaves_t;
-	slaves_t slaves;
-
-	std::string name;
-	
-	key_value_module(std::string name);
-	
-	void add_key_value_slave(key_value_slave* slave, std::string name, unsigned int slave_id);
-	int handle_key_value_request(void* ptr);
-
-	void log(robotkernel::loglevel lvl, const char *format, ...);
-	void debug(const char *format, ...);
-};
-
 
 class key_value_key_base {	
 public:
@@ -87,8 +96,7 @@ public:
 };
 
 class key_value_slave : 
-    public robotkernel::service_interface,
-    public std::enable_shared_from_this<key_value_slave> 
+    public service_provider::key_value::base
 {
 public:
 	typedef std::vector<key_value_key_base*> keys_t;
@@ -96,25 +104,10 @@ public:
 	typedef std::map<std::string, key_value_key_base*> key_map_t;
 	key_map_t key_map;
 
-	key_value_module* module;
 	std::string name;
-	unsigned int slave_id;
 
 	key_value_slave(const std::string& owner, const std::string& service_prefix);
 	~key_value_slave();
-	
-	void do_unregister() {
-		robotkernel::kernel& k = *robotkernel::kernel::get_instance();
-		k.remove_device(shared_from_this());
-	}
-	void do_register(const robotkernel::loglevel& ll) {
-		if(!module)
-			throw str_exception_tb("module is NULL - make sure to call key_value_module::add_key_value_slave() before key_value_slave::do_register()!");
-		do_unregister();
-
-		robotkernel::kernel& k = *robotkernel::kernel::get_instance();
-		k.add_device(shared_from_this());
-	}
 	
 	void check_exists(std::string name) {
 		if(key_map.find(name) != key_map.end())
@@ -150,6 +143,33 @@ public:
 		check_exists(name);
 		_add_key(new key_value_key<std::string>(this, name, value, after_change_cb));
 	}
+        
+        //! read key value pairs
+        /*!
+         * \param[in,out] transfer  Key value request. Key vector has to be filled
+         *                          with keys you want to read, the values will 
+         *                          be returned in the values vector.
+         */
+        void key_value_read(service_provider::key_value::key_value_transfer_t& transfer);
+
+        //! write key value pairs
+        /*!
+         * \param[in,out] transfer request
+         */
+        void key_value_write(const service_provider::key_value::key_value_transfer_t& transfer);
+
+        //! list keys with names
+        /*!
+         * \param[out] transfer request
+         */
+        void key_value_list(service_provider::key_value::key_value_transfer_t& transfer);
+	
+        //! list descriptions
+        /*!
+         * \param[out] data request
+         */
+        void key_value_list_descriptions(
+                std::vector<service_provider::key_value::key_value_description_t>& data);
 };
 
 #endif // KEY_VALUE_HELPER_H

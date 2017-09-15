@@ -5,126 +5,8 @@
 
 using namespace std;
 using namespace string_util;
-
-key_value_module::key_value_module(string name) : name(name) {
-	
-}
-
-void key_value_module::add_key_value_slave(key_value_slave* slave, std::string name, unsigned int slave_id) {
-	slave->name = name;
-	slave->slave_id = slave_id;
-	slave->module = this;
-	slaves[slave_id] = slave;	
-}
-void key_value_module::log(robotkernel::loglevel lvl, const char *format, ...) {
-	char buf[1024];	
-	va_list args;
-	va_start(args, format);
-	vsnprintf(buf, 1024, format, args);
-	klog(lvl, "[key_value_helper|%s] %s", name.c_str(), buf);
-}
-
-void key_value_module::debug(const char *format, ...) {
-	return;
-	char buf[1024];	
-	va_list args;
-	va_start(args, format);
-	vsnprintf(buf, 1024, format, args);
-	klog(robotkernel::verbose, "[key_value_helper|%s] %s", name.c_str(), buf);
-}
-
-int key_value_module::handle_key_value_request(void* ptr) {
-    /*
-	key_value_transfer_t* t = (key_value_transfer_t*)ptr;
-	t->error_msg = NULL;
-
-	try {
-		if(slaves.find(t->slave_id) == slaves.end())
-			throw str_exception_tb("unknown slave_id %d for key_value!", t->slave_id);
-		key_value_slave* slave = slaves[t->slave_id];
-
-		switch(t->command) {
-		case kvc_list: {
-			debug("list %d\n", t->slave_id);
-		
-			t->keys_len = slave->keys.size();
-			t->keys = (uint32_t*)malloc(sizeof(uint32_t) * t->keys_len);
-			t->values_len = t->keys_len;
-			t->values = (char**)malloc(sizeof(char*) * t->values_len);
-		
-			for(unsigned int k = 0; k < t->keys_len; k++) {
-				key_value_key_base* key = slave->keys[k];
-					
-				t->keys[k] = k;
-				t->values[k] = strdup(key->name.c_str());
-			}
-			break;
-		}
-		case kvc_read: {
-			debug("read %d\n", t->slave_id);
-
-			if(!t->values)
-				throw str_exception_tb("key_value_transfer_t::values is NULL!");
-			memset(t->values, 0, t->values_len * sizeof(char*));
-			t->values_len = 0; // if exception happens after this we do not signal valid values...
-		
-			for(unsigned int i = 0; i < t->keys_len; ++i) {
-				unsigned int k = t->keys[i];
-				if(k >= slave->keys.size())
-					throw str_exception_tb("unknown key_id %d for slave %s (id %d)!", k, slave->name.c_str(), t->slave_id);			
-				key_value_key_base* key = slave->keys[k];
-
-				t->values[i] = strdup(key->get_value().c_str());
-			}
-			t->values_len = t->keys_len; // values valid now
-			break;
-		}
-		case kvc_write: {
-			debug("write %d\n", t->slave_id);
-		
-			if(!t->keys)
-				throw str_exception_tb("key_value_transfer_t::keys is NULL!");
-			if(!t->values)
-				throw str_exception_tb("key_value_transfer_t::values is NULL!");
-			if(t->values_len != t->keys_len)
-				throw str_exception_tb("key_value_transfer_t::values_len is %d and ::keys_len is %d!", t->values_len, t->keys_len);
-				
-			for(unsigned int i = 0; i < t->keys_len; ++i) {
-				unsigned int k = t->keys[i];
-				if(k >= slave->keys.size())
-					throw str_exception_tb("unknown key_id %d for slave %s (id %d)!", k, slave->name.c_str(), t->slave_id);			
-				key_value_key_base* key = slave->keys[k];
-
-				key->set_value(t->values[i]);
-			}
-			break;
-		}
-		case kvc_list_descriptions: {
-			debug("list_descriptions %d\n", t->slave_id);
-		
-			t->keys_len = slave->keys.size();
-			t->descriptions = (key_value_description_t*)malloc(sizeof(key_value_description_t) * t->keys_len);
-		
-			for(unsigned int k = 0; k < t->keys_len; k++) {
-				key_value_key_base* key = slave->keys[k];
-				t->descriptions[k] = key->description;
-			}
-			break;
-		}
-			
-		default:
-			throw str_exception_tb("invalid key_value_command: %d", t->command);
-		}
-	}
-	catch(const exception& e) {
-		string msg = format_string("%s: key_value error:\n%s", name.c_str(), e.what());
-		log(robotkernel::error, "%s\n", msg.c_str());
-		t->error_msg = strdup(msg.c_str());
-		return -1;
-	}
-    */
-	return 0;
-}
+using namespace service_provider;
+using namespace service_provider::key_value;
 
 void key_value_key_base::set_value(std::string repr) {
 	_set_value(repr);
@@ -184,15 +66,16 @@ std::string key_value_repr<string>(string& value) {
 }
 
 
-key_value_slave::key_value_slave(const std::string& owner, const std::string& service_prefix)
-    : robotkernel::service_interface(owner, service_prefix) 
+key_value_slave::key_value_slave(const std::string& owner, 
+        const std::string& service_prefix) : 
+    base(owner, service_prefix)
 {
-	module = NULL;
 }
+
 key_value_slave::~key_value_slave() {
-	do_unregister();
 	delete_keys();
 }
+
 void key_value_slave::delete_keys() {
 	for(keys_t::iterator i = keys.begin(); i != keys.end(); ++i) {
 		delete *i;
@@ -205,48 +88,86 @@ key_value_key_base::key_value_key_base(key_value_slave* parent, std::string name
 	: parent(parent), name(name), after_change_cb(after_change_cb) {
 	memset(&description, 0, sizeof(description));
 }
+
 key_value_key_base::~key_value_key_base() {
-#define free_description_if_set(field)		\
-	if(description.field)			\
-		free((void*)description.field);
-	
-	//free_description_if_set(description);
-	//free_description_if_set(unit);
-	//free_description_if_set(default_value);
-    //free_description_if_set(format);	
 }
 
 key_value_key_base& key_value_key_base::describe(string desc) {
-	//if(description.description)
-	//	free((void*)description.description);
-	//description.description = strdup(desc.c_str());
 	description.description = desc;
 	return *this;
 }
 
 key_value_key_base& key_value_key_base::unit(string unit) {
-	//if(description.unit)
-	//	free((void*)description.unit);
-	//description.unit = strdup(unit.c_str());
     description.unit = unit;
     return *this;
 }
 
 key_value_key_base& key_value_key_base::default_value(string default_value) {
-	//if(description.default_value)
-	//	free((void*)description.default_value);
-	//description.default_value = strdup(default_value.c_str());
     description.default_value = default_value;
 	return *this;
 
 }
 
 key_value_key_base& key_value_key_base::format(string format) {
-	//if(description.format)
-	//	free((void*)description.format);
-	//description.format = strdup(format.c_str());
     description.format = format;
 	return *this;
 
+}
+
+// read key value pairs
+void key_value_slave::key_value_read(key_value_transfer_t& t) {
+    t.values.resize(t.keys.size());
+
+    for (unsigned i = 0; i < t.keys.size(); ++i) {
+        uint32_t k = t.keys[i];
+
+        if (k >= keys.size())
+            throw str_exception_tb("unknown key_id %d for slave %s!", 
+                    k, name.c_str());
+
+        key_value_key_base* key = keys[k];
+        t.values[i] = key->get_value();
+    }
+}
+
+// write key value pairs
+void key_value_slave::key_value_write(const key_value_transfer_t& t) {
+    if (t.values.size() != t.keys.size())
+        throw str_exception_tb("key_value_write: key_value_transfer_t::values.size() is %d"
+                " and ::keys.size() is %d!", t.values.size(), t.keys.size());
+
+    for (unsigned i = 0; i < t.keys.size(); ++i) {
+        uint32_t k = t.keys[i];
+
+        if (k >= keys.size())
+            throw str_exception_tb("unknown key_id %d for slave %s!", 
+                    k, name.c_str());
+
+        key_value_key_base* key = keys[k];
+        key->set_value(t.values[i]);
+    }
+}
+
+// list keys with names
+void key_value_slave::key_value_list(key_value_transfer_t& t) {
+    t.keys.resize(keys.size());
+    t.values.resize(keys.size());
+
+    for (unsigned i = 0; i < t.keys.size(); ++i) {
+        const key_value_key_base* key = keys[i];
+
+        t.keys[i] = i;
+        t.values[i] = key->name;
+    }
+}
+
+// list descriptions
+void key_value_slave::key_value_list_descriptions(std::vector<key_value_description_t>& data) {
+    data.resize(keys.size());
+
+    for (unsigned i = 0; i < keys.size(); ++i) {
+        const key_value_key_base* key = keys[i];
+        data[i] = key->description;
+    }
 }
 
