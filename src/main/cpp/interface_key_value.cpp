@@ -24,18 +24,19 @@
  * along with robotkernel.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "interface_key_value.h"
-#include "robotkernel/kernel.h"
-#include "robotkernel/exceptions.h"
+#include <robotkernel/kernel.h>
 #include <interface_key_value/module_intf.h>
-
 #include <string_util/string_util.h>
+
+#include "interface_key_value.h"
 
 INTERFACE_DEF(key_value, interface_key_value::key_value)
 
 using namespace std;
-using namespace ::robotkernel;
+using namespace robotkernel;
 using namespace interface_key_value;
+using namespace string_util;
+using string_util::str_exception;
 
 #ifndef __linux__
 static char *strndup(const char *s, size_t n) {
@@ -63,7 +64,7 @@ key_value::key_value(const YAML::Node& node)
     : interface_base("key_value", node) {
     kernel& k = *kernel::get_instance();
     if (!k.clnt)
-	    throw ::str_exception("[interface_key_value|%s] "
+	    throw str_exception("[interface_key_value|%s] "
                 "no ln_connection!\n", mod_name.c_str());
     
     stringstream base;
@@ -83,7 +84,7 @@ key_value::key_value(const YAML::Node& node)
 }
 
 //! service reading key value pairs
-int key_value::on_read(ln::service_request& req, robotkernel_key_value_read_t& svc) {
+int key_value::on_read(ln::service_request& req, ln_msg::robotkernel::key_value::read_t& svc) {
     memset(&svc.resp, 0, sizeof(svc.resp));
     
     key_value_transfer_t t;
@@ -133,7 +134,7 @@ int key_value::on_read(ln::service_request& req, robotkernel_key_value_read_t& s
 }
 
 
-int key_value::on_write(ln::service_request& req, robotkernel_key_value_write_t& svc) {
+int key_value::on_write(ln::service_request& req, ln_msg::robotkernel::key_value::write_t& svc) {
     memset(&svc.resp, 0, sizeof(svc.resp));
     
     if(svc.req.keys_len != svc.req.values_len) {
@@ -182,7 +183,7 @@ int key_value::on_write(ln::service_request& req, robotkernel_key_value_write_t&
     return 0;
 }
         
-int key_value::on_list(ln::service_request& req, robotkernel_key_value_list_t& svc) {
+int key_value::on_list(ln::service_request& req, ln_msg::robotkernel::key_value::list_t& svc) {
     memset(&svc.resp, 0, sizeof(svc.resp));
     
     key_value_transfer_t t;
@@ -230,7 +231,7 @@ int key_value::on_list(ln::service_request& req, robotkernel_key_value_list_t& s
     return 0;
 }
 
-int key_value::on_list_descriptions(ln::service_request& req, robotkernel_key_value_list_descriptions_t& data) {
+int key_value::on_list_descriptions(ln::service_request& req, ln_msg::robotkernel::key_value::list_descriptions_t& data) {
     memset(&data.resp, 0, sizeof(data.resp));
     
     key_value_transfer_t t;
@@ -244,9 +245,9 @@ int key_value::on_list_descriptions(ln::service_request& req, robotkernel_key_va
         if(ret) {
             // error!
             if(t.error_msg) {
-                throw ::str_exception_tb("module returned error %d for list_descriptions key-value-transfer:\n%s", ret, t.error_msg);
+                throw str_exception_tb("module returned error %d for list_descriptions key-value-transfer:\n%s", ret, t.error_msg);
             } else {
-                throw ::str_exception_tb("module returned error %d for list_descriptions key-value-transfer (without error message)!", ret);
+                throw str_exception_tb("module returned error %d for list_descriptions key-value-transfer (without error message)!", ret);
             }
         }
         

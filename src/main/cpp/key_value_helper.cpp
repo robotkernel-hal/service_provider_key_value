@@ -1,9 +1,11 @@
 #include <algorithm>
 #include <string>
+#include <string_util/string_util.h>
 
 #include <interface_key_value/key_value_helper.h>
 
 using namespace std;
+using namespace string_util;
 
 key_value_module::key_value_module(string name) : name(name) {
 	

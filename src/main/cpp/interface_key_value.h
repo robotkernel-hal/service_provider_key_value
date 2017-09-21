@@ -32,16 +32,18 @@
 #include <stdint.h>
 #include <ln_cppwrapper.h>
 
+#include "ln_messages.h"
+
 namespace interface_key_value {
 
-#include "ln_messages.h"
-    
+using string_util::str_exception;
+
 class key_value : 
-		public ::robotkernel::interface_base,
-		public robotkernel::key_value::read_base,
-		public robotkernel::key_value::write_base,
-		public robotkernel::key_value::list_base,
-		public robotkernel::key_value::list_descriptions_base 
+		public robotkernel::interface_base,
+		public ln_msg::robotkernel::key_value::read_base,
+		public ln_msg::robotkernel::key_value::write_base,
+		public ln_msg::robotkernel::key_value::list_base,
+		public ln_msg::robotkernel::key_value::list_descriptions_base 
 {
     public:
         //! default construction
@@ -52,17 +54,17 @@ class key_value :
 
         //! service reading key value pairs
         int on_read(ln::service_request& req, 
-                robotkernel_key_value_read_t& svc);
+                ln_msg::robotkernel::key_value::read_t& svc);
 
         //! service writing key value pairs
         int on_write(ln::service_request& req, 
-                robotkernel_key_value_write_t& svc);
+                ln_msg::robotkernel::key_value::write_t& svc);
 
         //! service listing key value pairs
         int on_list(ln::service_request& req, 
-                robotkernel_key_value_list_t& svc);
+                ln_msg::robotkernel::key_value::list_t& svc);
 
-	int on_list_descriptions(ln::service_request& req, robotkernel_key_value_list_descriptions_t& data);
+	int on_list_descriptions(ln::service_request& req, ln_msg::robotkernel::key_value::list_descriptions_t& data);
 };
 
 } // namespace interface
