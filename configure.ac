@@ -57,7 +57,12 @@ AC_CHECK_FUNCS([strdup])
 AC_CHECK_LIB(dl, dlopen, DL_LIBS="-ldl", DL_LIBS=)
 AC_SUBST(DL_LIBS)
 
-AC_CONFIG_FILES([Makefile src/main/cpp/Makefile interface_key_value.pc])
+AC_CONFIG_FILES([
+        Makefile
+        src/main/cpp/Makefile
+        interface_key_value.pc
+        libkey_value_helper.pc
+])
 
 AC_OUTPUT
 
