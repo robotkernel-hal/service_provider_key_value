@@ -17,7 +17,8 @@ void key_value_key_base::set_value(std::string repr) {
 
 template<>
 void key_value_eval<bool>(bool* ptr, std::string repr) {
-	std::transform(repr.begin(), repr.end(), repr.begin(), ::tolower);
+	std::transform(repr.begin(), repr.end(), repr.begin(), 
+            [](unsigned char c) -> unsigned char { return std::tolower(c); });
 	if(repr == "true" || repr == "1" || repr == "yes")
  		*ptr = true;
 	else
