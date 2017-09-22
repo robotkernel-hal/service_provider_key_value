@@ -1,9 +1,0 @@
-service
-request
-uint32_t* keys
-
-define string as "string"
-string* values
-
-response 
-char* error_message
