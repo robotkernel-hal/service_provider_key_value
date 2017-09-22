@@ -1,0 +1,21 @@
+requires_version 0.2.43
+# this include file can be customized with the following defines:
+#   service_provider_key_value_base
+#     (optional) path to service_provider_key_value base directory
+#     e.g. /volume/software/robotkernel/packages/service_provider_key_value/5.0.0
+#     defaults to rmpm structure
+#   service_provider_key_value_library_path
+#     (optional) add custom search paths
+
+defines
+service_provider_key_value_base:          %(dirname %(dirname %(CURDIR)))
+service_provider_key_value_libdir:        %(subst "${exec_prefix}/", "", "@libdir@")
+service_provider_key_value_type:          %(ifexists "%(service_provider_key_value_base)/%(service_provider_key_value_libdir)/libservice_provider_key_value.so", "local_install", "rmpm_release")
+service_provider_key_value_library_path:  %(ifeq "%(service_provider_key_value_type)", "local_install", "%(service_provider_key_value_base)/%(service_provider_key_value_libdir)", "%(service_provider_key_value_base)/lib/$(ARCH)")
+
+ifndef rk_library_path: rk_library_path: ""
+rk_library_path: %(rk_library_path):%(service_provider_key_value_library_path)
+
+ifndef rk_libpath: rk_libpath: ""
+rk_libpath: %(rk_libpath):%(service_provider_key_value_library_path)
+
