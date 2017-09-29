@@ -31,6 +31,7 @@
 #include <string>
 #include <list>
 #include <map>
+#include <algorithm>
 
 #include "service_provider/key_value/base.h"
 
