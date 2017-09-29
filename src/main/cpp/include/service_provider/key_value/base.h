@@ -66,25 +66,31 @@ class base :
 
         //! read key value pairs
         /*!
-         * \param transfer request
+         * \param[in,out] transfer  Key value request. Key vector has to be filled
+         *                          with keys you want to read, the values will 
+         *                          be returned in the values vector.
          */
         virtual void key_value_read(key_value_transfer_t& transfer);
 
         //! write key value pairs
         /*!
-         * \param transfer request
+         * \param[in] transfer      Key value request. Key and values vector has to 
+         *                          be filled with keys and values you want to write.
          */
         virtual void key_value_write(const key_value_transfer_t& transfer);
 
         //! list keys with names
         /*!
-         * \param transfer request
+         * \param[out] transfer     Key value request. Key vector will be filled with
+         *                          all available key, values vector will be filled 
+         *                          with their names.
          */
         virtual void key_value_list(key_value_transfer_t& transfer);
 	
         //! list descriptions
         /*!
-         * \param data request
+         * \param[out] transfer     Key value request. The data vector will returned the
+         *                          descriptions of all available keys.
          */
         virtual void key_value_list_descriptions(std::vector<key_value_description_t>& data);
 };
