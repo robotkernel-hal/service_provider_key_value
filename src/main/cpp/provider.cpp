@@ -104,10 +104,10 @@ int key_value::handler::service_read(const robotkernel::service_arglist_t& reque
 
 const std::string key_value::handler::service_definition_read = 
 "request:\n"
-"   vector/uint32_t: keys\n"
+"- vector/uint32_t: keys\n"
 "response:\n"
-"   vector/string: values\n"
-"   string: error_message\n";
+"- vector/string: values\n"
+"- string: error_message\n";
 
 //! service callback key-value write
 /*!
@@ -146,10 +146,10 @@ int key_value::handler::service_write(const robotkernel::service_arglist_t& requ
 
 const std::string key_value::handler::service_definition_write = 
 "request:\n"
-"   uint32_t*: keys\n"
-"   string*: values\n"
+"- uint32_t*: keys\n"
+"- string*: values\n"
 "response:\n"
-"   string: error_message\n";
+"- string: error_message\n";
 
 //! service callback key-value list
 /*!
@@ -186,9 +186,9 @@ int key_value::handler::service_list(const robotkernel::service_arglist_t& reque
 
 const std::string key_value::handler::service_definition_list =
 "response:\n"
-"   uint32_t*: keys\n"
-"   string*: names\n"
-"   string: error_message\n";
+"- uint32_t*: keys\n"
+"- string*: names\n"
+"- string: error_message\n";
 
 //! service callback descriptions
 /*!
@@ -246,9 +246,9 @@ int key_value::handler::service_list_descriptions(const robotkernel::service_arg
 
 const std::string key_value::handler::service_definition_list_descriptions =
 "response:\n"
-"   vector/string: description\n"
-"   vector/string: unit\n"
-"   vector/string: default_value\n"
-"   vector/string: format\n"
-"   vector/uint8_t: read_only\n";
+"- vector/string: description\n"
+"- vector/string: unit\n"
+"- vector/string: default_value\n"
+"- vector/string: format\n"
+"- vector/uint8_t: read_only\n";
 
