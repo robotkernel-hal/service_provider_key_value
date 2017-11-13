@@ -70,14 +70,14 @@ class base :
          *                          with keys you want to read, the values will 
          *                          be returned in the values vector.
          */
-        virtual void key_value_read(key_value_transfer_t& transfer);
+        virtual void key_value_read(key_value_transfer_t& transfer) = 0;
 
         //! write key value pairs
         /*!
          * \param[in] transfer      Key value request. Key and values vector has to 
          *                          be filled with keys and values you want to write.
          */
-        virtual void key_value_write(const key_value_transfer_t& transfer);
+        virtual void key_value_write(const key_value_transfer_t& transfer) = 0;
 
         //! list keys with names
         /*!
@@ -85,15 +85,17 @@ class base :
          *                          all available key, values vector will be filled 
          *                          with their names.
          */
-        virtual void key_value_list(key_value_transfer_t& transfer);
+        virtual void key_value_list(key_value_transfer_t& transfer) = 0;
 	
         //! list descriptions
         /*!
          * \param[out] transfer     Key value request. The data vector will returned the
          *                          descriptions of all available keys.
          */
-        virtual void key_value_list_descriptions(std::vector<key_value_description_t>& data);
+        virtual void key_value_list_descriptions(std::vector<key_value_description_t>& data) = 0;
 };
+        
+inline base::~base() { }
 
 #ifdef EMACS
 {

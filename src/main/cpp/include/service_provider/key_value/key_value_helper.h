@@ -50,7 +50,7 @@ class key_value_key_base
 
         key_value_key_base(key_value_slave* parent, std::string name, bool after_change_cb) 
             : parent(parent), name(name), after_change_cb(after_change_cb) {
-                memset(&description, 0, sizeof(description));
+                //memset(&description, 0, sizeof(description));
             }
 
         virtual ~key_value_key_base() {};
@@ -283,6 +283,16 @@ inline void key_value_eval<float>(float* ptr, std::string repr) {
 }
 
 template<>
+inline void key_value_eval<short>(short* ptr, std::string repr) {
+    *ptr = atoi(repr.c_str());
+}
+
+template<>
+inline void key_value_eval<unsigned short>(unsigned short* ptr, std::string repr) {
+    *ptr = (unsigned short)strtol(repr.c_str(), (char**)NULL, 10);
+}
+
+template<>
 inline void key_value_eval<int>(int* ptr, std::string repr) {
     *ptr = atoi(repr.c_str());
 }
@@ -309,6 +319,16 @@ inline std::string key_value_repr<bool>(bool& value) {
 template<>
 inline std::string key_value_repr<float>(float& value) {
     return string_util::format_string("%f", value);
+}
+
+template<>
+inline std::string key_value_repr<short>(short& value) {
+    return string_util::format_string("%hd", value);
+}
+
+template<>
+inline std::string key_value_repr<unsigned short>(unsigned short& value) {
+    return string_util::format_string("%hu", value);
 }
 
 template<>

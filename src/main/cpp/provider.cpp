@@ -147,7 +147,7 @@ int key_value::handler::service_write(const robotkernel::service_arglist_t& requ
 const std::string key_value::handler::service_definition_write = 
 "request:\n"
 "   uint32_t*: keys\n"
-"   string*: values\n"
+"   vector/string: values\n"
 "response:\n"
 "   string: error_message\n";
 
@@ -166,7 +166,7 @@ int key_value::handler::service_list(const robotkernel::service_arglist_t& reque
     key_value_transfer_t t;
     
     try { 
-        _instance->key_value_write(t);
+        _instance->key_value_list(t);
         keys.assign(t.keys.begin(), t.keys.end());
         names.assign(t.values.begin(), t.values.end());
     } catch (std::exception& e) {
@@ -186,8 +186,8 @@ int key_value::handler::service_list(const robotkernel::service_arglist_t& reque
 
 const std::string key_value::handler::service_definition_list =
 "response:\n"
-"   uint32_t*: keys\n"
-"   string*: names\n"
+"   vector/uint32_t: keys\n"
+"   vector/string: names\n"
 "   string: error_message\n";
 
 //! service callback descriptions
