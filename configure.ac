@@ -39,6 +39,7 @@ AC_CHECK_FUNCS([strdup])
 AC_CHECK_LIB(dl, dlopen)
 
 AC_CONFIG_FILES([Makefile src/main/cpp/Makefile service_provider_key_value.pc])
+AC_CONFIG_FILES([share/ln/service_provider_key_value.inc.lnc], [cp share/ln/service_provider_key_value.inc.lnc ${ac_abs_top_srcdir}/share/ln/])
 
 AC_OUTPUT
 
