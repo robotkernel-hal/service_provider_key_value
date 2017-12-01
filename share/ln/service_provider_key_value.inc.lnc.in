@@ -10,8 +10,7 @@ requires_version 0.2.43
 defines
 service_provider_key_value_base:          %(dirname %(dirname %(CURDIR)))
 service_provider_key_value_libdir:        %(subst "${exec_prefix}/", "", "@libdir@")
-service_provider_key_value_type:          %(ifexists "%(service_provider_key_value_base)/%(service_provider_key_value_libdir)/libservice_provider_key_value.so", "local_install", "rmpm_release")
-service_provider_key_value_library_path:  %(ifeq "%(service_provider_key_value_type)", "local_install", "%(service_provider_key_value_base)/%(service_provider_key_value_libdir)", "%(service_provider_key_value_base)/lib/$(ARCH)")
+service_provider_key_value_library_path:  %(service_provider_key_value_base)/%(service_provider_key_value_libdir)
 
 ifndef rk_library_path: rk_library_path: ""
 rk_library_path: %(rk_library_path):%(service_provider_key_value_library_path)
