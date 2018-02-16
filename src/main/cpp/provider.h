@@ -54,8 +54,8 @@ class provider : public robotkernel::service_provider_base<handler, base> {
         /*!
          * \param node configuration node
          */
-        provider()
-            : service_provider_base("key_value") {};
+        provider(const std::string& name)
+            : service_provider_base(name, "key_value") {};
 };
 
 class handler : public robotkernel::log_base {
