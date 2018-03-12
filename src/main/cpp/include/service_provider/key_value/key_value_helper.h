@@ -293,6 +293,11 @@ inline void key_value_eval<unsigned short>(unsigned short* ptr, std::string repr
 }
 
 template<>
+inline void key_value_eval<unsigned char>(unsigned char* ptr, std::string repr) {
+    *ptr = (unsigned char)strtol(repr.c_str(), (char**)NULL, 10);
+}
+
+template<>
 inline void key_value_eval<int>(int* ptr, std::string repr) {
     *ptr = atoi(repr.c_str());
 }
@@ -328,6 +333,11 @@ inline std::string key_value_repr<short>(short& value) {
 
 template<>
 inline std::string key_value_repr<unsigned short>(unsigned short& value) {
+    return string_util::format_string("%hu", value);
+}
+
+template<>
+inline std::string key_value_repr<unsigned char>(unsigned char& value) {
     return string_util::format_string("%hu", value);
 }
 
