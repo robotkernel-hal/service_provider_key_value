@@ -106,6 +106,31 @@ class key_value_key :
         }
 };
 
+template <typename T>
+class key_value_key_read_only : 
+    public key_value_key_base 
+{	
+    public:
+        T* ptr;
+        key_value_key_read_only(key_value_slave* parent, std::string name, T* ptr, bool after_change_cb)
+            : key_value_key_base(parent, name, after_change_cb), ptr(ptr) {
+                // printf("new key value %s with ptr %#x\n", name.c_str(), ptr);
+            }
+
+        virtual ~key_value_key_read_only() {}
+
+        virtual void _set_value(std::string repr) {}
+        virtual void _set_value_from_yaml(const YAML::Node& value) {}
+
+        virtual std::string get_value() {
+            return key_value_repr<T>(*ptr);
+        }
+
+        virtual void* get_void_pointer() {
+            return (void*)ptr;
+        }
+};
+
 class key_value_slave : 
     public service_provider::key_value::base
 {
@@ -355,6 +380,12 @@ template<>
 inline std::string key_value_repr<std::string>(std::string& value) {
     return string_util::repr(value);
 }
+
+template<>
+inline std::string key_value_repr<char *>(char *& value) {
+    return string_util::format_string("%s", value);
+}
+
 
 inline void key_value_key_base::set_value(std::string repr) {
 	_set_value(repr);
