@@ -333,6 +333,16 @@ inline void key_value_eval<unsigned int>(unsigned int* ptr, std::string repr) {
 }
 
 template<>
+inline void key_value_eval<int64_t>(int64_t* ptr, std::string repr) {
+    *ptr = (int64_t)strtoull(repr.c_str(), (char**)NULL, 10);
+}
+
+template<>
+inline void key_value_eval<uint64_t>(uint64_t* ptr, std::string repr) {
+    *ptr = (uint64_t)strtoll(repr.c_str(), (char**)NULL, 10);
+}
+
+template<>
 inline void key_value_eval<std::string>(std::string* ptr, std::string repr) {
     string_util::py_value* v = string_util::eval_full(repr);
     *ptr = std::string(*v);
@@ -386,6 +396,15 @@ inline std::string key_value_repr<char *>(char *& value) {
     return string_util::format_string("%s", value);
 }
 
+template<>
+inline std::string key_value_repr<int64_t>(int64_t& value) {
+    return string_util::format_string("%lld", value);
+}
+
+template<>
+inline std::string key_value_repr<uint64_t>(uint64_t& value) {
+    return string_util::format_string("%llu", value);
+}
 
 inline void key_value_key_base::set_value(std::string repr) {
 	_set_value(repr);
