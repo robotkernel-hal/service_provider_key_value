@@ -30,7 +30,7 @@
 
 #include <string_util/string_util.h>
 
-#include "service_provider/service_provider/key_value/base.h"
+#include "service_provider/key_value/base.h"
 
 SERVICE_PROVIDER_DEF(key_value, service_provider::key_value::provider);
 
