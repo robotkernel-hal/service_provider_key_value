@@ -106,6 +106,31 @@ class key_value_key :
         }
 };
 
+template <typename T>
+class key_value_key_read_only : 
+    public key_value_key_base 
+{	
+    public:
+        T* ptr;
+        key_value_key_read_only(key_value_slave* parent, std::string name, T* ptr, bool after_change_cb)
+            : key_value_key_base(parent, name, after_change_cb), ptr(ptr) {
+                // printf("new key value %s with ptr %#x\n", name.c_str(), ptr);
+            }
+
+        virtual ~key_value_key_read_only() {}
+
+        virtual void _set_value(std::string repr) {}
+        virtual void _set_value_from_yaml(const YAML::Node& value) {}
+
+        virtual std::string get_value() {
+            return key_value_repr<T>(*ptr);
+        }
+
+        virtual void* get_void_pointer() {
+            return (void*)ptr;
+        }
+};
+
 class key_value_slave : 
     public service_provider::key_value::base
 {
@@ -308,6 +333,16 @@ inline void key_value_eval<unsigned int>(unsigned int* ptr, std::string repr) {
 }
 
 template<>
+inline void key_value_eval<int64_t>(int64_t* ptr, std::string repr) {
+    *ptr = (int64_t)strtoull(repr.c_str(), (char**)NULL, 10);
+}
+
+template<>
+inline void key_value_eval<uint64_t>(uint64_t* ptr, std::string repr) {
+    *ptr = (uint64_t)strtoll(repr.c_str(), (char**)NULL, 10);
+}
+
+template<>
 inline void key_value_eval<std::string>(std::string* ptr, std::string repr) {
     string_util::py_value* v = string_util::eval_full(repr);
     *ptr = std::string(*v);
@@ -354,6 +389,21 @@ inline std::string key_value_repr<unsigned int>(unsigned int& value) {
 template<>
 inline std::string key_value_repr<std::string>(std::string& value) {
     return string_util::repr(value);
+}
+
+template<>
+inline std::string key_value_repr<char *>(char *& value) {
+    return string_util::format_string("%s", value);
+}
+
+template<>
+inline std::string key_value_repr<int64_t>(int64_t& value) {
+    return string_util::format_string("%lld", value);
+}
+
+template<>
+inline std::string key_value_repr<uint64_t>(uint64_t& value) {
+    return string_util::format_string("%llu", value);
 }
 
 inline void key_value_key_base::set_value(std::string repr) {
