@@ -1,7 +1,7 @@
-from conans import ConanFile, AutoToolsBuildEnvironment
+from conans import ConanFile, AutoToolsBuildEnvironment, tools
 import os
 
-from conans import ConanFile, AutoToolsBuildEnvironment
+from conans import ConanFile, AutoToolsBuildEnvironment, tools
 import re
 
 class MainProject(ConanFile):
@@ -10,9 +10,10 @@ class MainProject(ConanFile):
     url = f"https://rmc-github.robotic.dlr.de/robotkernel/{name}"
     description = "robotkernel-5 service provider for key value devices."
     settings = "os", "compiler", "build_type", "arch"
-    exports_sources = "src/*", "README.wiki", "project.properties", "service_provider_key_value.pc.in", "Makefile.am", "m4/*", "configure.ac", "LICENSE"
+    exports_sources = ["*", "!.gitignore"] + ["!%s" % x for x in tools.Git().excluded_files()]
+
     generators = "pkg_config"
-    requires = "robotkernel/[~=5.0]@robotkernel/unstable"
+    requires = "robotkernel/[~=5.0]@robotkernel/stable"
 
     def source(self):
         filedata = None

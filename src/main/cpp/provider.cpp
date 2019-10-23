@@ -103,6 +103,7 @@ int key_value::handler::service_read(const robotkernel::service_arglist_t& reque
 }
 
 const std::string key_value::handler::service_definition_read = 
+"name: service_provider/key_value/read\n"
 "request:\n"
 "- vector/uint32_t: keys\n"
 "response:\n"
@@ -145,6 +146,7 @@ int key_value::handler::service_write(const robotkernel::service_arglist_t& requ
 }
 
 const std::string key_value::handler::service_definition_write = 
+"name: service_provider/key_value/write\n"
 "request:\n"
 "- vector/uint32_t: keys\n"
 "- vector/string: values\n"
@@ -185,6 +187,7 @@ int key_value::handler::service_list(const robotkernel::service_arglist_t& reque
 }
 
 const std::string key_value::handler::service_definition_list =
+"name: service_provider/key_value/list\n"
 "response:\n"
 "- vector/uint32_t: keys\n"
 "- vector/string: names\n"
@@ -245,6 +248,7 @@ int key_value::handler::service_list_descriptions(const robotkernel::service_arg
 }
 
 const std::string key_value::handler::service_definition_list_descriptions =
+"name: service_provider/key_value/list_descriptions\n"
 "response:\n"
 "- vector/string: description\n"
 "- vector/string: unit\n"
