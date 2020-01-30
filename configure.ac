@@ -38,9 +38,18 @@ AC_CHECK_FUNCS([strdup])
 # Checks for library functions.
 AC_CHECK_LIB(dl, dlopen)
 
+<<<<<<< HEAD
 AC_CONFIG_FILES([Makefile 
                  src/main/cpp/Makefile 
                  service_provider_key_value.pc ])
+=======
+AC_CONFIG_FILES([
+        Makefile
+        src/main/cpp/Makefile
+        interface_key_value.pc
+        libkey_value_helper.pc
+])
+>>>>>>> robotkernel-4.2
 
 AC_OUTPUT
 
