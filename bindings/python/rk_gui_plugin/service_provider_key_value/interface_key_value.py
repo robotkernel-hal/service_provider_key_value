@@ -113,13 +113,13 @@ class interface_key_value(helpers.service_provider_view, helpers.builder_base):
             gobject.TYPE_STRING, # unit
             gobject.TYPE_STRING, # description
         )
-        col = tv.insert_column_with_attributes(-1, "name", gtk.CellRendererText(), text=1)
+        col = tv.insert_column_with_attributes(-1, "Name", gtk.CellRendererText(), text=1)
         col.set_property("resizable", True)
 
         cr = gtk.CellRendererText()
         cr.set_property("editable", True)
         cr.connect("edited", self.on_edited)
-        n = tv.insert_column_with_data_func(-1, "value", cr, self.on_key_value_data)
+        n = tv.insert_column_with_data_func(-1, "Value", cr, self.on_key_value_data)
         col = tv.get_column(n - 1)
         #col = tv.insert_column_with_attributes(-1, "key", gtk.CellRendererText(), text=0)
         col.set_property("resizable", True)
@@ -127,11 +127,11 @@ class interface_key_value(helpers.service_provider_view, helpers.builder_base):
 
         cr = gtk.CellRendererText()
         cr.set_property("editable", False)
-        n = tv.insert_column_with_data_func(-1, "unit", cr, self.on_key_value_unit_data)
+        n = tv.insert_column_with_data_func(-1, "Unit", cr, self.on_key_value_unit_data)
         col = tv.get_column(n - 1)
         col.set_property("resizable", True)
 
-        col = self.description_col = tv.insert_column_with_attributes(-1, "description", gtk.CellRendererText(), text=5)
+        col = self.description_col = tv.insert_column_with_attributes(-1, "Description", gtk.CellRendererText(), text=5)
         col.set_property("resizable", True)
 
         tv.set_model(m)
@@ -449,8 +449,8 @@ class interface_key_value(helpers.service_provider_view, helpers.builder_base):
     def on_refresh(self, btn):
         if self.current_device is None:
             return
-        if self.current_device in self.key_names:
-            del self.key_names[self.current_device]
+        #if self.current_device in self.key_names:
+        #    del self.key_names[self.current_device]
         self._show_names()
 
     def on_edited(self, cr, path, value):
