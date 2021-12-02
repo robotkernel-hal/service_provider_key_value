@@ -25,6 +25,7 @@
  */
 
 #include "provider.h"
+#include "mds.h"
 #include "robotkernel/kernel.h"
 #include "robotkernel/exceptions.h"
 
@@ -102,14 +103,6 @@ int key_value::handler::service_read(const robotkernel::service_arglist_t& reque
     return 0;
 }
 
-const std::string key_value::handler::service_definition_read = 
-"name: service_provider/key_value/read\n"
-"request:\n"
-"- vector/uint32_t: keys\n"
-"response:\n"
-"- vector/string: values\n"
-"- string: error_message\n";
-
 //! service callback key-value write
 /*!
  * \param request service request data
@@ -145,14 +138,6 @@ int key_value::handler::service_write(const robotkernel::service_arglist_t& requ
     return 0;
 }
 
-const std::string key_value::handler::service_definition_write = 
-"name: service_provider/key_value/write\n"
-"request:\n"
-"- vector/uint32_t: keys\n"
-"- vector/string: values\n"
-"response:\n"
-"- string: error_message\n";
-
 //! service callback key-value list
 /*!
  * \param request service request data
@@ -185,13 +170,6 @@ int key_value::handler::service_list(const robotkernel::service_arglist_t& reque
 
     return 0;
 }
-
-const std::string key_value::handler::service_definition_list =
-"name: service_provider/key_value/list\n"
-"response:\n"
-"- vector/uint32_t: keys\n"
-"- vector/string: names\n"
-"- string: error_message\n";
 
 //! service callback descriptions
 /*!
@@ -246,13 +224,4 @@ int key_value::handler::service_list_descriptions(const robotkernel::service_arg
 
     return 0;
 }
-
-const std::string key_value::handler::service_definition_list_descriptions =
-"name: service_provider/key_value/list_descriptions\n"
-"response:\n"
-"- vector/string: description\n"
-"- vector/string: unit\n"
-"- vector/string: default_value\n"
-"- vector/string: format\n"
-"- vector/uint8_t: read_only\n";
 

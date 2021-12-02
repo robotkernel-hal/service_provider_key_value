@@ -77,7 +77,6 @@ class handler : public robotkernel::log_base {
          */
         int service_read(const robotkernel::service_arglist_t& request, 
                 robotkernel::service_arglist_t& response);
-        static const std::string service_definition_read;
 
         //! service callback key-value write
         /*!
@@ -87,7 +86,6 @@ class handler : public robotkernel::log_base {
          */
         int service_write(const robotkernel::service_arglist_t& request, 
                 robotkernel::service_arglist_t& response);
-        static const std::string service_definition_write;
 
         //! service callback key-value list
         /*!
@@ -97,7 +95,6 @@ class handler : public robotkernel::log_base {
          */
         int service_list(const robotkernel::service_arglist_t& request, 
                 robotkernel::service_arglist_t& response);
-        static const std::string service_definition_list;
         
         //! service callback key-value list descriptions
         /*!
@@ -107,7 +104,6 @@ class handler : public robotkernel::log_base {
          */
         int service_list_descriptions(const robotkernel::service_arglist_t& request, 
                 robotkernel::service_arglist_t& response);
-        static const std::string service_definition_list_descriptions;
 };
 
 #ifdef EMACS
