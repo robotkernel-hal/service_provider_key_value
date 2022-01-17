@@ -95,9 +95,14 @@ class key_value_device(helpers.svc_wrapper):
 
     def write(self, key, value):
         self.svc_write.req.keys = [key]
-        p = getattr(self.svc_write.req, "new_vector/string_packet")()
-        p.data = repr(value)
-        p.data_len = len(repr(value))
+        if hasattr(self.svc_write.req, "new_vector/string_packet"):
+            p = getattr(self.svc_write.req, "new_vector/string_packet")()
+            p.data = repr(value)
+            p.data_len = len(repr(value))
+        else:
+            p = getattr(self.svc_write.req, "new_string_packet")()
+            p.string = repr(value)
+            p.string_len = len(repr(value))
         self.svc_write.req.values = [p]
         self.svc_write.call()
 
