@@ -51,9 +51,15 @@ class key_value_device(helpers.svc_wrapper):
         self.n_hex_digits = 2
 
         for key, name in zip(ret.keys, ret.names):
-            self.keys[int(key)] = act_key = key_value_key(int(key), name.data)
+            real_name = ""
+            if hasattr(name, "data"):
+                real_name = name.data
+            else:
+                real_name = name.string
 
-            self.key_names.append((int(key), name.data))
+            self.keys[int(key)] = act_key = key_value_key(int(key), real_name)
+
+            self.key_names.append((int(key), real_name))
             key_hex = "%x" % key
             if len(key_hex) > self.n_hex_digits:
                 self.n_hex_digits = len(key_hex)
@@ -69,10 +75,16 @@ class key_value_device(helpers.svc_wrapper):
             return # assume no descriptions
 
         for field in ret.description:
-            self.key_descriptions.append(field.data)
+            if hasattr(field, "data"):
+                self.key_descriptions.append(field.data)
+            else:
+                self.key_descriptions.append(field.string)
 
         for field in ret.unit:
-            self.key_units.append(field.data)
+            if hasattr(field, "data"):
+                self.key_units.append(field.data)
+            else:
+                self.key_units.append(field.string)
 
     def read(self, keys):
         self.svc_read.req.keys = keys
@@ -420,7 +432,10 @@ class interface_key_value(helpers.service_provider_view, helpers.builder_base):
         for key, value in zip(keys, values):
             path = to_read[key]
             iter = self.model.get_iter(path)
-            self.model[iter][2] = value.data
+            if hasattr(value, "data"):
+                self.model[iter][2] = value.data
+            else:
+                self.model[iter][2] = value.string
             self.model.row_changed(path, iter)
 
     def search_func(self, m, col, key, iter):
