@@ -1,0 +1,7 @@
+name: service_provider/key_value/list_descriptions
+response:
+- vector/string: description
+- vector/string: unit
+- vector/string: default_value
+- vector/string: format
+- vector/uint8_t: read_only

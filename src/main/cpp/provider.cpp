@@ -25,7 +25,8 @@
  */
 
 #include "provider.h"
-#include "mds.h"
+#include "service_definitions.h"
+
 #include "robotkernel/kernel.h"
 #include "robotkernel/exceptions.h"
 
@@ -41,6 +42,11 @@ using namespace robotkernel;
 using namespace service_provider;
 using namespace string_util;
 using namespace key_value;
+
+const std::string service_provider::key_value::handler::service_definition_read = robotkernel_service_provider_key_value_read_service_definition;
+const std::string service_provider::key_value::handler::service_definition_write = robotkernel_service_provider_key_value_write_service_definition;
+const std::string service_provider::key_value::handler::service_definition_list = robotkernel_service_provider_key_value_list_service_definition;
+const std::string service_provider::key_value::handler::service_definition_list_descriptions = robotkernel_service_provider_key_value_list_descriptions_service_definition;
 
 //! handler construction
 key_value::handler::handler(const robotkernel::sp_service_interface_t& req)

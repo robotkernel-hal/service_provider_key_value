@@ -63,6 +63,11 @@ class handler : public robotkernel::log_base {
         typedef std::shared_ptr<service_provider::key_value::base> sp_kv_base_t;
         sp_kv_base_t _instance;
 
+	static const std::string service_definition_read;
+        static const std::string service_definition_write;
+        static const std::string service_definition_list;
+        static const std::string service_definition_list_descriptions;
+
         //! handler construction
         handler(const robotkernel::sp_service_interface_t& req);
 

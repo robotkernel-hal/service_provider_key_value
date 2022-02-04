@@ -1,0 +1,5 @@
+name: service_provider/key_value/list
+response:
+- vector/uint32_t: keys
+- vector/string: names
+- string: error_message
