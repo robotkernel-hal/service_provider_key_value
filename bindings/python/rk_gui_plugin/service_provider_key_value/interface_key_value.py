@@ -130,6 +130,9 @@ class interface_key_value(helpers.service_provider_view, helpers.builder_base):
             gobject.TYPE_STRING, # unit
             gobject.TYPE_STRING, # description
         )
+        col = tv.insert_column_with_attributes(-1, "Key", gtk.CellRendererText(), text=0)
+        col.set_property("resizable", True)
+
         col = tv.insert_column_with_attributes(-1, "Name", gtk.CellRendererText(), text=1)
         col.set_property("resizable", True)
 
