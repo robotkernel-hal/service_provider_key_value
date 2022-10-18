@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.22.1 -->
 <interface>
-  <requires lib="gtk+" version="2.16"/>
-  <!-- interface-naming-policy project-wide -->
-  <object class="GtkVBox" id="key_value_box">
+  <requires lib="gtk+" version="3.0"/>
+  <object class="GtkBox" id="key_value_box">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="border_width">4</property>
+    <property name="orientation">vertical</property>
     <property name="spacing">4</property>
     <child>
-      <object class="GtkHBox" id="hbox1">
+      <object class="GtkBox" id="hbox1">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="spacing">4</property>
@@ -19,7 +20,7 @@
             <property name="receives_default">True</property>
             <property name="relief">none</property>
             <child>
-              <object class="GtkHBox" id="hbox2">
+              <object class="GtkBox" id="hbox2">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="spacing">4</property>
@@ -63,9 +64,9 @@
             <property name="receives_default">True</property>
             <property name="events">GDK_BUTTON_PRESS_MASK | GDK_STRUCTURE_MASK</property>
             <property name="relief">none</property>
-            <signal name="pressed" handler="on_all_format_btn_pressed" swapped="no"/>
+            <signal name="button-press-event" handler="on_all_format_btn_pressed" swapped="no"/>
             <child>
-              <object class="GtkHBox" id="vbox1">
+              <object class="GtkBox" id="vbox1">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="spacing">4</property>
@@ -110,7 +111,7 @@
             <property name="events">GDK_BUTTON_PRESS_MASK | GDK_STRUCTURE_MASK</property>
             <property name="relief">none</property>
             <child>
-              <object class="GtkHBox" id="vbox2">
+              <object class="GtkBox" id="vbox2">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="spacing">4</property>
@@ -158,8 +159,6 @@
     <child>
       <object class="GtkScrolledWindow" id="key_value_sw">
         <property name="can_focus">True</property>
-        <property name="hscrollbar_policy">automatic</property>
-        <property name="vscrollbar_policy">automatic</property>
         <property name="shadow_type">in</property>
         <child>
           <object class="GtkTreeView" id="key_value_tv">
@@ -168,6 +167,9 @@
             <signal name="button-press-event" handler="on_key_value_tv_button_press_event" swapped="no"/>
             <signal name="row-collapsed" handler="on_key_value_tv_row_collapsed" swapped="no"/>
             <signal name="row-expanded" handler="on_key_value_tv_row_expanded" swapped="no"/>
+            <child internal-child="selection">
+              <object class="GtkTreeSelection"/>
+            </child>
           </object>
         </child>
       </object>

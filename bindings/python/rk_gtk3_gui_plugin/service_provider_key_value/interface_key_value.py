@@ -2,12 +2,16 @@
 
 import os
 import sys
-import gtk
-import gobject
 import pprint
 import math
 import traceback
 import yaml
+
+import gi
+gi.require_version('Gtk', '3.0')
+gi.require_version('GLib', '2.0')
+from gi.repository import Gtk
+from gi.repository import GObject
 
 import helpers
 
@@ -130,37 +134,37 @@ class interface_key_value(helpers.service_provider_view, helpers.builder_base):
         self.tv = tv = self.key_value_tv
 
         # key_value treeview
-        m = self.model = gtk.TreeStore(
-            gobject.TYPE_STRING, # key display
-            gobject.TYPE_STRING, # name
-            gobject.TYPE_STRING, # value / repr
-            gobject.TYPE_PYOBJECT, # real key
+        m = self.model = Gtk.TreeStore(
+            GObject.TYPE_STRING, # key display
+            GObject.TYPE_STRING, # name
+            GObject.TYPE_STRING, # value / repr
+            GObject.TYPE_PYOBJECT, # real key
 
-            gobject.TYPE_STRING, # unit
-            gobject.TYPE_STRING, # description
+            GObject.TYPE_STRING, # unit
+            GObject.TYPE_STRING, # description
         )
-        col = tv.insert_column_with_attributes(-1, "Key", gtk.CellRendererText(), text=0)
+        col = tv.insert_column_with_attributes(-1, "Key", Gtk.CellRendererText(), text=0)
         col.set_property("resizable", True)
 
-        col = tv.insert_column_with_attributes(-1, "Name", gtk.CellRendererText(), text=1)
+        col = tv.insert_column_with_attributes(-1, "Name", Gtk.CellRendererText(), text=1)
         col.set_property("resizable", True)
 
-        cr = gtk.CellRendererText()
+        cr = Gtk.CellRendererText()
         cr.set_property("editable", True)
         cr.connect("edited", self.on_edited)
         n = tv.insert_column_with_data_func(-1, "Value", cr, self.on_key_value_data)
         col = tv.get_column(n - 1)
-        #col = tv.insert_column_with_attributes(-1, "key", gtk.CellRendererText(), text=0)
+        #col = tv.insert_column_with_attributes(-1, "key", Gtk.CellRendererText(), text=0)
         col.set_property("resizable", True)
         tv.set_tooltip_column(0)
 
-        cr = gtk.CellRendererText()
+        cr = Gtk.CellRendererText()
         cr.set_property("editable", False)
         n = tv.insert_column_with_data_func(-1, "Unit", cr, self.on_key_value_unit_data)
         col = tv.get_column(n - 1)
         col.set_property("resizable", True)
 
-        col = self.description_col = tv.insert_column_with_attributes(-1, "Description", gtk.CellRendererText(), text=5)
+        col = self.description_col = tv.insert_column_with_attributes(-1, "Description", Gtk.CellRendererText(), text=5)
         col.set_property("resizable", True)
 
         tv.set_model(m)
@@ -168,7 +172,7 @@ class interface_key_value(helpers.service_provider_view, helpers.builder_base):
         tv.set_search_equal_func(func=self.search_func)
 
         self.kv_refresh_btn.connect("clicked", self.on_refresh)
-        #self.all_format_btn.add_events(gtk.gdk.BUTTON_PRESS_MASK)
+        #self.all_format_btn.add_events(Gdk.EventMask.BUTTON_PRESS_MASK)
         self.all_format_btn.connect("button_press_event", self.all_format_btn_press)
         self.unit_conv_btn.connect("button_press_event", self.unit_conv_btn_press)
 
@@ -425,7 +429,7 @@ class interface_key_value(helpers.service_provider_view, helpers.builder_base):
     def _queue_read(self, key, key_iter, timeout=250):
         self._read_queue[key] = key_iter
         if self._read_queue_id is None:
-            self._read_queue_id = gobject.timeout_add(timeout, self._process_read_queue)
+            self._read_queue_id = GObject.timeout_add(timeout, self._process_read_queue)
 
     def _process_read_queue(self):
         to_read = self._read_queue
@@ -438,7 +442,7 @@ class interface_key_value(helpers.service_provider_view, helpers.builder_base):
                 print traceback.format_exc()
 
         if not self._read_queue:
-            gobject.source_remove(self._read_queue_id)
+            GObject.source_remove(self._read_queue_id)
             self._read_queue_id = None
             return False
         return True
@@ -533,11 +537,11 @@ class interface_key_value(helpers.service_provider_view, helpers.builder_base):
     def show_exception(self, text=None, reraise=True):
         traceback.print_exc()
 
-        dlg = gtk.MessageDialog(
+        dlg = Gtk.MessageDialog(
             self.app.window,
-            gtk.DIALOG_DESTROY_WITH_PARENT,
-            gtk.MESSAGE_ERROR,
-            buttons=gtk.BUTTONS_OK)
+            Gtk.DialogFlags.DESTROY_WITH_PARENT,
+            Gtk.MessageType.ERROR,
+            buttons=Gtk.ButtonsType.OK)
 
         if text is None:
             stack = traceback.format_exc().split("\n")
@@ -635,7 +639,7 @@ class interface_key_value(helpers.service_provider_view, helpers.builder_base):
 
     def _schedule_save_display_options(self):
         if hasattr(self, "_schedule_save_display_options_id"):
-            gobject.source_remove(self._schedule_save_display_options_id)
+            GObject.source_remove(self._schedule_save_display_options_id)
             del self._schedule_save_display_options_id
         def save_options():
             del self._schedule_save_display_options_id
@@ -661,7 +665,7 @@ class interface_key_value(helpers.service_provider_view, helpers.builder_base):
             fp.close()
             return False
 
-        self._schedule_save_display_options_id = gobject.timeout_add(1000, save_options)
+        self._schedule_save_display_options_id = GObject.timeout_add(1000, save_options)
 
     def all_format_btn_press(self, btn, ev):
         self.is_format_all = True
