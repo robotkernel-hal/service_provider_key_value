@@ -10,7 +10,8 @@ class MainProject(ConanFile):
     exports_sources = ["*", "!.gitignore"] + ["!%s" % x for x in tools.Git().excluded_files()]
 
     def requirements(self):
-        self.requires(f"{self.name}_ln_msgdef/{self.version}@{self.user}/{self.channel}")
+        self.requires(f"{self.name}_ln_msgdef/5.0.6@{self.user}/stable")
+        #self.requires(f"{self.name}_ln_msgdef/{self.version}@{self.user}/{self.channel}")
         self.requires("robotkernel_service_helper/[*]@robotkernel/stable")
         self.requires("robotkernel/[~=5]@robotkernel/stable")
 
