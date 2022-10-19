@@ -125,7 +125,7 @@ class interface_key_value(helpers.service_provider_view, helpers.builder_base):
         helpers.builder_base.__init__(self, fn, 'key_value_box', 'unit_conv_popup', 'kv_popup')
         helpers.service_provider_view.__init__(self, parent.app, parent, self.key_value_box, 'list')
 
-        container.pack_start(self.key_value_box, True, True)
+        container.pack_start(self.key_value_box, True, True, 0)
 
         self.devices = {}
         self.current_device = None
