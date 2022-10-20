@@ -233,6 +233,10 @@ class interface_key_value(helpers.service_provider_view, helpers.builder_base):
             iter = m.iter_parent(iter)
         return ".".join(name)
 
+    def on_all_format_btn_pressed(self, widget, ev):
+        logger.warning("on_all_format_btn_pressed(): Handler not implemented, skipping")
+        return True
+
     def on_key_value_tv_row_expanded(self, tv, iter, path):
         name = self._find_prefix_name(iter)
         self.current_device.current_display_options["expanded"].add(name)
