@@ -143,29 +143,39 @@ class interface_key_value(helpers.service_provider_view, helpers.builder_base):
             GObject.TYPE_STRING, # unit
             GObject.TYPE_STRING, # description
         )
-        col = tv.insert_column_with_attributes(-1, "Key", Gtk.CellRendererText(), text=0)
-        col.set_property("resizable", True)
+        #col = tv.insert_column_with_attributes(-1, "Key", Gtk.CellRendererText(), text=0)
+        renderer_text = Gtk.CellRendererText()
+        col1 = Gtk.TreeViewColumn("Key", renderer_text, text=0)
+        treeview.append_column(col1)
+        
+        col1.set_property("resizable", True)
 
-        col = tv.insert_column_with_attributes(-1, "Name", Gtk.CellRendererText(), text=1)
-        col.set_property("resizable", True)
+        #col = tv.insert_column_with_attributes(-1, "Name", Gtk.CellRendererText(), text=1)
+        renderer_text = Gtk.CellRendererText()
+        col2 = Gtk.TreeViewColumn("Name", renderer_text, text=1)
+        treeview.append_column(col2)
+        col2.set_property("resizable", True)
 
         cr = Gtk.CellRendererText()
         cr.set_property("editable", True)
         cr.connect("edited", self.on_edited)
         n = tv.insert_column_with_data_func(-1, "Value", cr, self.on_key_value_data)
-        col = tv.get_column(n - 1)
-        #col = tv.insert_column_with_attributes(-1, "key", Gtk.CellRendererText(), text=0)
-        col.set_property("resizable", True)
+        col3 = tv.get_column(n - 1)        
+
+        col3.set_property("resizable", True)
         tv.set_tooltip_column(0)
 
         cr = Gtk.CellRendererText()
         cr.set_property("editable", False)
         n = tv.insert_column_with_data_func(-1, "Unit", cr, self.on_key_value_unit_data)
-        col = tv.get_column(n - 1)
-        col.set_property("resizable", True)
+        col4 = tv.get_column(n - 1)
+        col4.set_property("resizable", True)
 
-        col = self.description_col = tv.insert_column_with_attributes(-1, "Description", Gtk.CellRendererText(), text=5)
-        col.set_property("resizable", True)
+        #col = self.description_col = tv.insert_column_with_attributes(-1, "Description", Gtk.CellRendererText(), text=5)
+        renderer_text = Gtk.CellRendererText()
+        col5 = self.description_col = Gtk.TreeViewColumn("Description", renderer_text, text=5)
+        treeview.append_column(col5)
+        col5.set_property("resizable", True)
 
         tv.set_model(m)
         tv.connect("row-activated", self.on_key_value_tv_row_activated)
