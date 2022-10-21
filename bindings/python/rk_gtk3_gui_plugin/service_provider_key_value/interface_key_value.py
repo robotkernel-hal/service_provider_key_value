@@ -146,14 +146,14 @@ class interface_key_value(helpers.service_provider_view, helpers.builder_base):
         #col = tv.insert_column_with_attributes(-1, "Key", Gtk.CellRendererText(), text=0)
         renderer_text = Gtk.CellRendererText()
         col1 = Gtk.TreeViewColumn("Key", renderer_text, text=0)
-        treeview.append_column(col1)
+        tv.append_column(col1)
         
         col1.set_property("resizable", True)
 
         #col = tv.insert_column_with_attributes(-1, "Name", Gtk.CellRendererText(), text=1)
         renderer_text = Gtk.CellRendererText()
         col2 = Gtk.TreeViewColumn("Name", renderer_text, text=1)
-        treeview.append_column(col2)
+        tv.append_column(col2)
         col2.set_property("resizable", True)
 
         cr = Gtk.CellRendererText()
@@ -174,12 +174,12 @@ class interface_key_value(helpers.service_provider_view, helpers.builder_base):
         #col = self.description_col = tv.insert_column_with_attributes(-1, "Description", Gtk.CellRendererText(), text=5)
         renderer_text = Gtk.CellRendererText()
         col5 = self.description_col = Gtk.TreeViewColumn("Description", renderer_text, text=5)
-        treeview.append_column(col5)
+        tv.append_column(col5)
         col5.set_property("resizable", True)
 
         tv.set_model(m)
         tv.connect("row-activated", self.on_key_value_tv_row_activated)
-        tv.set_search_equal_func(func=self.search_func)
+        tv.set_search_equal_func(self.search_func)
 
         self.kv_refresh_btn.connect("clicked", self.on_refresh)
         #self.all_format_btn.add_events(Gdk.EventMask.BUTTON_PRESS_MASK)
