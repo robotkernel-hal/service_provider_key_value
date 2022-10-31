@@ -16,8 +16,9 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Robotkernel-GUI.  If not, see <http://www.gnu.org/licenses/>.
 '''
+from __future__ import absolute_import
 
-from interface_key_value import *
+from .interface_key_value import *
 
 def init_plugin(parent):
     parent.add_service_provider_gui('key_value', interface_key_value)

@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
+from __future__ import print_function
 import os
 import sys
 import pprint
@@ -380,7 +381,7 @@ class interface_key_value(helpers.service_provider_view, helpers.builder_base):
         except:
             row = m[iter]
             display = row[2]
-            print "exception in data-handler:\n%s\nfor row %r" % (traceback.format_exc(), tuple(row))
+            print("exception in data-handler:\n%s\nfor row %r" % (traceback.format_exc(), tuple(row)))
             cr.set_property("text", str(display))
         return True
 
@@ -434,7 +435,8 @@ class interface_key_value(helpers.service_provider_view, helpers.builder_base):
                         try:
                             display = format_string % conv(value)
                         except:
-                            print (format_string, value)
+                            print("error: could not convert:", format_string, value)
+                            logger.error("_on_key_value_data:(): could not convert value {} with format string {}".format(value, format_string))
                             raise
             # todo byte_order
         cr.set_property("text", display)
@@ -453,7 +455,7 @@ class interface_key_value(helpers.service_provider_view, helpers.builder_base):
             try:
                 self._update_key_values(to_read)
             except:
-                print traceback.format_exc()
+                print(traceback.format_exc())
 
         if not self._read_queue:
             GObject.source_remove(self._read_queue_id)
@@ -531,13 +533,13 @@ class interface_key_value(helpers.service_provider_view, helpers.builder_base):
                 else:
                     value = conv(value)
         except:
-            print "warning: invalid input format: %r" % value
+            print("warning: invalid input format: %r" % value)
             pass
 
         row[2] = None
         self.model.row_changed(path, self.model.get_iter(path))
         # now write, then read!
-        print "write 0x%x to %r" % (key, value)
+        print("write 0x%x to %r" % (key, value))
         #try:
         self._write(key, value)
         #except:
@@ -575,7 +577,7 @@ class interface_key_value(helpers.service_provider_view, helpers.builder_base):
             return False
         ret = tv.get_path_at_pos(int(ev.x), int(ev.y))
         if ret is None:
-            print "no path"
+            print("no path")
             return False
         path, tvc, x, y = ret
         tv.set_cursor(path, tvc)
