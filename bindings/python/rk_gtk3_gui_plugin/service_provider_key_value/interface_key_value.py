@@ -30,10 +30,10 @@ class key_value_key():
 
 class key_value_device(helpers.svc_wrapper):
     def __init__(self, service_prefix, app, widget, modname, devname):
-        logger.debug("initializing key-value client for %s.%s.%s.key_value"
-                     % (service_prefix, modname, devname))
+        logger.debug("initializing key-value client for {}.{}.{}.key_value".format(
+            service_prefix, modname, devname))
         helpers.svc_wrapper.__init__(self, app.clnt,
-                "%s.%s.%s.key_value" % (service_prefix, modname, devname))
+                "{}.{}.{}.key_value".format(service_prefix, modname, devname))
 
         self.modname = modname
         self.devname = devname
@@ -54,7 +54,7 @@ class key_value_device(helpers.svc_wrapper):
 
     def list(self):
         self.svc_list.call()
-        logger.debug("received list: %r" % self.svc_list.resp)
+        logger.debug("received list: {!r}".format(self.svc_list.resp))
 
         ret = self.svc_list.resp
 
@@ -78,7 +78,7 @@ class key_value_device(helpers.svc_wrapper):
 
     def list_descriptions(self):
         self.svc_list_descriptions.call()
-        logger.debug("received descriptions: %r" % self.svc_list_descriptions.resp)
+        logger.debug("received descriptions: {!r}".format(self.svc_list_descriptions.resp))
         ret = self.svc_list_descriptions.resp
 
         self.key_descriptions = []
@@ -101,7 +101,8 @@ class key_value_device(helpers.svc_wrapper):
     def read(self, keys):
         self.svc_read.req.keys = keys
         self.svc_read.call()
-        logger.debug("received for keys %r values = r" % (keys, self.svc_read.resp.values))
+        logger.debug("received for keys {!r} values = {!r}".format(
+            keys, self.svc_read.resp.values))
 
         values = self.svc_read.resp.values
         return values
@@ -117,7 +118,7 @@ class key_value_device(helpers.svc_wrapper):
             p.string = repr(value)
             p.string_len = len(repr(value))
         self.svc_write.req.values = [p]
-        logger.debug("for key = %r, writing values = %r" % (key, value))
+        logger.debug("for key = {!r}, writing values = {!r}".format(key, value))
         self.svc_write.call()
 
 class interface_key_value(helpers.service_provider_view, helpers.builder_base):
