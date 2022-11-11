@@ -1,6 +1,12 @@
 #!/usr/bin/python
 
 from __future__ import print_function
+from __future__ import division
+from builtins import zip
+from builtins import str
+from builtins import map
+from past.utils import old_div
+from builtins import object
 import os
 import sys
 import pprint
@@ -19,7 +25,7 @@ import helpers
 import logging
 logger = logging.getLogger(__name__)
 
-class key_value_key():
+class key_value_key(object):
     def __init__(self, key, name):
         self.key = key
         self.name = name
@@ -518,7 +524,7 @@ class interface_key_value(helpers.service_provider_view, helpers.builder_base):
             conv = self.active_conversions.get(unit)
             if conv is not None:
                 B, C = conv
-                conv = lambda b: b / C
+                conv = lambda b: old_div(b, C)
 
         try:
             if format[0].startswith("hex"):
@@ -530,7 +536,7 @@ class interface_key_value(helpers.service_provider_view, helpers.builder_base):
                 value = eval(value)
             if conv:
                 if type(value) in (list, tuple):
-                    value = map(conv, value)
+                    value = list(map(conv, value))
                 else:
                     value = conv(value)
         except:
@@ -666,7 +672,7 @@ class interface_key_value(helpers.service_provider_view, helpers.builder_base):
 
             # put active conversions
             ac = self.display_options["active_conversions"] = []
-            for A, (B, C) in self.active_conversions.iteritems():
+            for A, (B, C) in self.active_conversions.items():
                 ac.append((A, B))
 
             fp = file(self._display_options_fn, "wb")
@@ -699,8 +705,8 @@ class interface_key_value(helpers.service_provider_view, helpers.builder_base):
         # B = A * C
         # A = B / C
         # A      B     C
-        ("rad", "deg", 180 / math.pi),
-        ("deg", "rad", math.pi / 180),
+        ("rad", "deg", 180. / math.pi),
+        ("deg", "rad", math.pi / 180.),
         ("mm",  "m",   1e-3),
         ("m",   "mm",  1e3)
     )

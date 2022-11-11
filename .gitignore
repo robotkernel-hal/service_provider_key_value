@@ -29,3 +29,4 @@
 /compile
 /workspace-release
 share/ln/service_provider_key_value.inc.lnc
+/bindings/python/rk_gtk3_gui_plugin/service_provider_key_value/interface_key_value.py.bak
