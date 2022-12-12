@@ -638,7 +638,7 @@ class interface_key_value(helpers.service_provider_view, helpers.builder_base):
         if not os.path.isfile(self._display_options_fn):
             self.display_options = {}
             return
-        fp = file(self._display_options_fn, "rb")
+        fp = open(self._display_options_fn, "rb")
         self.yaml_loader = yaml.loader.Loader
         def tuple_constructor(loader, node):
             return tuple(loader.construct_sequence(node))
@@ -675,13 +675,14 @@ class interface_key_value(helpers.service_provider_view, helpers.builder_base):
             for A, (B, C) in self.active_conversions.items():
                 ac.append((A, B))
 
-            fp = file(self._display_options_fn, "wb")
+            fp = open(self._display_options_fn, "wb")
             self.yaml_dumper = yaml.dumper.Dumper
             def tuple_representer(dumper, data):
                 return dumper.represent_list(data)
             self.yaml_dumper.add_representer(tuple, tuple_representer)
             try:
-                yaml.dump(self.display_options, fp, self.yaml_dumper)
+                yaml.dump(self.display_options.encode("utf-8"),
+                          fp, self.yaml_dumper)
             except:
                 pprint.pprint(self.display_options)
                 raise
