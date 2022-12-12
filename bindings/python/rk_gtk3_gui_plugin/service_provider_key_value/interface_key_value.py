@@ -681,8 +681,8 @@ class interface_key_value(helpers.service_provider_view, helpers.builder_base):
                 return dumper.represent_list(data)
             self.yaml_dumper.add_representer(tuple, tuple_representer)
             try:
-                yaml.dump(self.display_options.encode("utf-8"),
-                          fp, self.yaml_dumper)
+                yaml.dump(self.display_options,
+                          fp, self.yaml_dumper, encoding="utf-8")
             except:
                 pprint.pprint(self.display_options)
                 raise
