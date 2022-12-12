@@ -638,7 +638,7 @@ class interface_key_value(helpers.service_provider_view, helpers.builder_base):
         if not os.path.isfile(self._display_options_fn):
             self.display_options = {}
             return
-        fp = file(self._display_options_fn, "rb")
+        fp = open(self._display_options_fn, "rb")
         self.yaml_loader = yaml.loader.Loader
         def tuple_constructor(loader, node):
             return tuple(loader.construct_sequence(node))
