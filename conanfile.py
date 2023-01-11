@@ -6,6 +6,7 @@ class MainProject(ConanFile):
     python_requires_extend = "conan_template.RobotkernelConanFile"
 
     name = "service_provider_key_value"
+    url = "https://rmc-github.robotic.dlr.de/robotkernel/service_provider_key_value"
     description = "robotkernel service provider for key value devices."
     exports_sources = ["*", "!.gitignore"] + ["!%s" % x for x in tools.Git().excluded_files()]
 
