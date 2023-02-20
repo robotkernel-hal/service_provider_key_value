@@ -1,19 +1,19 @@
 import os
 from conans import ConanFile, AutoToolsBuildEnvironment
 
-class lnrk_interface_python(ConanFile):
-    name = "service_provider_canopen_protocol_python_rkgui"
-    description = "python rkgui binding to service_provider_canopen_protocol."
+class service_provider_key_value_python_rkgui(ConanFile):
+    name = "service_provider_key_value_python_rkgui"
+    description = "python rkgui binding to service_provider_key_value."
     author = "Robert Burger <robert.burgert@dlr.de>"
     license = "GPLv3"
     
-    url = f"https://rmc-github.robotic.dlr.de/robotkernel/service_provider_canopen_protocol"
+    url = f"https://rmc-github.robotic.dlr.de/robotkernel/service_provider_key_value"
     settings = "os"
     pure_python_folder = os.path.join("bindings","python")
     exports_sources = os.path.join(pure_python_folder, "*")
     
     def requirements(self):
-        self.requires(f"service_provider_canopen_protocol_ln_msgdef/{self.version}@{self.user}/{self.channel}")
+        self.requires(f"service_provider_key_value_ln_msgdef/{self.version}@{self.user}/{self.channel}")
 
     def package(self):
         self.copy(os.path.join(self.pure_python_folder, "*"))
