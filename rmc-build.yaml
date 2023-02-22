@@ -9,5 +9,5 @@ builds:
     build_file: conanfile.py
     configurations: *build_configs
   - context: conan
-    build_file: conanfile.python_rkgui.py
+    build_file: conanfile.rkgui.py
     configurations: *build_configs

@@ -2,7 +2,7 @@ import os
 from conans import ConanFile, AutoToolsBuildEnvironment
 
 class service_provider_key_value_python_rkgui(ConanFile):
-    name = "service_provider_key_value_python_rkgui"
+    name = "service_provider_key_value_rkgui"
     description = "python rkgui binding to service_provider_key_value."
     author = "Robert Burger <robert.burgert@dlr.de>"
     license = "GPLv3"
