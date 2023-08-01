@@ -5,3 +5,4 @@ response:
 - vector/string: default_value
 - vector/string: format
 - vector/uint8_t: read_only
+- string: error_message

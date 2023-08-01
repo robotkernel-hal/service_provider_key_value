@@ -43,191 +43,104 @@ using namespace service_provider;
 using namespace string_util;
 using namespace key_value;
 
-const std::string service_provider::key_value::handler::service_definition_read = robotkernel_service_provider_key_value_read_service_definition;
-const std::string service_provider::key_value::handler::service_definition_write = robotkernel_service_provider_key_value_write_service_definition;
-const std::string service_provider::key_value::handler::service_definition_list = robotkernel_service_provider_key_value_list_service_definition;
-const std::string service_provider::key_value::handler::service_definition_list_descriptions = robotkernel_service_provider_key_value_list_descriptions_service_definition;
-
 //! handler construction
 key_value::handler::handler(const robotkernel::sp_service_interface_t& req)
-    : log_base(req->owner, "key_value", req->device_name) {
-    robotkernel::kernel& k = *robotkernel::kernel::get_instance();
-
+    : log_base(req->owner, "key_value", req->device_name) 
+{
     _instance = std::dynamic_pointer_cast<service_provider::key_value::base>(req);
-    if (!_instance)
+    if (!_instance) {
         throw str_exception("wrong base class");
+    }
 
-    k.add_service(_instance->owner, _instance->device_name + ".read", service_definition_read,
-            std::bind(&key_value::handler::service_read, this, _1, _2));
-    k.add_service(_instance->owner, _instance->device_name + ".write", service_definition_write,
-            std::bind(&key_value::handler::service_write, this, _1, _2));
-    k.add_service(_instance->owner, _instance->device_name + ".list", service_definition_list,
-            std::bind(&key_value::handler::service_list, this, _1, _2));
-    k.add_service(_instance->owner, _instance->device_name + ".list_descriptions", service_definition_list_descriptions,
-            std::bind(&key_value::handler::service_list_descriptions, this, _1, _2));
+    add_svc_read(_instance->owner, _instance->device_name + ".read");
+    add_svc_write(_instance->owner, _instance->device_name + ".write");
+    add_svc_list(_instance->owner, _instance->device_name + ".list");
+    add_svc_list_descriptions(_instance->owner, _instance->device_name + ".list_descriptions");
 }
 
 //! handler destruction
 key_value::handler::~handler() {
-    kernel& k = *kernel::get_instance();
-    k.remove_service(_instance->owner, _instance->device_name + ".read");
-    k.remove_service(_instance->owner, _instance->device_name + ".write");
-    k.remove_service(_instance->owner, _instance->device_name + ".list");
-    k.remove_service(_instance->owner, _instance->device_name + ".list_descriptions");
 };
 
-//! service callback key-value read
+//! svc_read
 /*!
- * \param request service request data
- * \parma response service response data
- * \return success
+ * \param[in]   req     Service request data.
+ * \param[out]  resp    Service response data.
  */
-int key_value::handler::service_read(const robotkernel::service_arglist_t& request, 
-        robotkernel::service_arglist_t& response) {
-    // vectors for keys and values
-#define READ_REQ_KEYS   0
-    std::vector<rk_type> keys = request[READ_REQ_KEYS];
-    std::vector<rk_type> values(keys.size());
-    string error_message = "";
-
+void key_value::handler::svc_read(const struct svc_req_read& req, struct svc_resp_read& resp) {
     key_value_transfer_t t;
-    t.keys.assign(keys.begin(), keys.end());
+    t.keys.assign(req.keys.begin(), req.keys.end());
     
     try { 
         _instance->key_value_read(t);
-        values.assign(t.values.begin(), t.values.end());
+        resp.values.assign(t.values.begin(), t.values.end());
     } catch (std::exception& e) {
-        error_message = e.what();
+        resp.error_message = e.what();
     }
-
-#define READ_RESP_VALUES            0
-#define READ_RESP_ERROR_MESSAGE     1
-    response.resize(2);
-    response[READ_RESP_VALUES]          = values;
-    response[READ_RESP_ERROR_MESSAGE]   = error_message;
-
-    return 0;
 }
 
-//! service callback key-value write
+//! svc_write
 /*!
- * \param request service request data
- * \parma response service response data
- * \return success
+ * \param[in]   req     Service request data.
+ * \param[out]  resp    Service response data.
  */
-int key_value::handler::service_write(const robotkernel::service_arglist_t& request, 
-        robotkernel::service_arglist_t& response) {
-    // vectors for keys and values
-#define WRITE_REQ_KEYS  0
-#define WRITE_REQ_VALUES    1
-    std::vector<rk_type> keys = request[WRITE_REQ_KEYS];
-    std::vector<rk_type> values = request[WRITE_REQ_VALUES]; 
-    string error_message = "";
-
+void key_value::handler::svc_write(const struct svc_req_write& req, struct svc_resp_write& resp) {
     key_value_transfer_t t;
-    t.keys.assign(keys.begin(), keys.end());
-    for (std::vector<rk_type>::iterator it = values.begin(); it != values.end(); ++it) {
-        std::string tmp = *it;
-        t.values.push_back(tmp);
+    t.keys.assign(req.keys.begin(), req.keys.end());
+    for (auto val : req.values) {
+        t.values.push_back((string)val);
     }
     
     try { 
         _instance->key_value_write(t);
     } catch (std::exception& e) {
-        error_message = e.what();
+        resp.error_message = e.what();
     }
-
-#define WRITE_RESP_ERROR_MESSAGE        0
-    response.resize(1);
-    response[WRITE_RESP_ERROR_MESSAGE]  = error_message;
-
-    return 0;
 }
 
-//! service callback key-value list
+//! svc_list
 /*!
- * \param request service request data
- * \parma response service response data
- * \return success
+ * \param[in]   req     Service request data.
+ * \param[out]  resp    Service response data.
  */
-int key_value::handler::service_list(const robotkernel::service_arglist_t& request, 
-        robotkernel::service_arglist_t& response) {
-    std::vector<rk_type> keys;
-    std::vector<rk_type> names;
-    string error_message = "";
-
+void key_value::handler::svc_list(const struct svc_req_list& req, struct svc_resp_list& resp) {
     key_value_transfer_t t;
     
     try { 
         _instance->key_value_list(t);
-        keys.assign(t.keys.begin(), t.keys.end());
-        names.assign(t.values.begin(), t.values.end());
+        resp.keys.assign(t.keys.begin(), t.keys.end());
+        resp.names.assign(t.values.begin(), t.values.end());
     } catch (std::exception& e) {
-        error_message = e.what();
+        resp.error_message = e.what();
     }
-
-#define LIST_RESP_KEYS          0
-#define LIST_RESP_NAMES         1
-#define LIST_RESP_ERROR_MESSAGE 2
-    response.resize(3);
-    response[LIST_RESP_KEYS]            = keys;
-    response[LIST_RESP_NAMES]           = names;
-    response[LIST_RESP_ERROR_MESSAGE]   = error_message;
-
-    return 0;
 }
 
-//! service callback descriptions
+//! svc_list_descriptions
 /*!
- * \param request service request data
- * \parma response service response data
- * \return success
+ * \param[in]   req     Service request data.
+ * \param[out]  resp    Service response data.
  */
-int key_value::handler::service_list_descriptions(const robotkernel::service_arglist_t& request, 
-        robotkernel::service_arglist_t& response) {
-    std::vector<rk_type> description;
-    std::vector<rk_type> unit;
-    std::vector<rk_type> default_value;
-    std::vector<rk_type> format;
-    std::vector<rk_type> read_only;
-    string error_message = "";
-
+void key_value::handler::svc_list_descriptions(const struct svc_req_list_descriptions& req, struct svc_resp_list_descriptions& resp) {
     std::vector<key_value_description_t> t;
     
     try { 
         _instance->key_value_list_descriptions(t);
 
-        description.resize(t.size());
-        unit.resize(t.size());
-        default_value.resize(t.size());
-        format.resize(t.size());
-        read_only.resize(t.size());
+        resp.description.resize(t.size());
+        resp.unit.resize(t.size());
+        resp.default_value.resize(t.size());
+        resp.format.resize(t.size());
+        resp.read_only.resize(t.size());
 
         for (unsigned i = 0; i < t.size(); ++i) {
-            description[i]   = t[i].description;
-            unit[i]          = t[i].unit;
-            default_value[i] = t[i].default_value;
-            format[i]        = t[i].format;
-            read_only[i]     = t[i].read_only;
+            resp.description[i]   = t[i].description;
+            resp.unit[i]          = t[i].unit;
+            resp.default_value[i] = t[i].default_value;
+            resp.format[i]        = t[i].format;
+            resp.read_only[i]     = t[i].read_only;
         }
     } catch (std::exception& e) {
-        error_message = e.what();
+        resp.error_message = e.what();
     }
-
-#define LIST_DESCRIPTIONS_RESP_DESCRIPTION          0
-#define LIST_DESCRIPTIONS_RESP_UNIT                 1
-#define LIST_DESCRIPTIONS_RESP_DEFAULT_VALUE        2
-#define LIST_DESCRIPTIONS_RESP_FORMAT               3
-#define LIST_DESCRIPTIONS_RESP_READ_ONLY            4
-#define LIST_DESCRIPTIONS_RESP_ERROR_MESSAGE        5
-    response.resize(6);
-    response[LIST_DESCRIPTIONS_RESP_DESCRIPTION]     = description;
-    response[LIST_DESCRIPTIONS_RESP_UNIT]            = unit;
-    response[LIST_DESCRIPTIONS_RESP_DEFAULT_VALUE]   = default_value;
-    response[LIST_DESCRIPTIONS_RESP_FORMAT]          = format;
-    response[LIST_DESCRIPTIONS_RESP_READ_ONLY]       = read_only;
-    response[LIST_DESCRIPTIONS_RESP_ERROR_MESSAGE]   = error_message;
-
-    return 0;
 }
 

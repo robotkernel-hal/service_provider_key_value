@@ -12,5 +12,5 @@ class MainProject(ConanFile):
 
     def requirements(self):
         self.requires(f"{self.name}_ln_msgdef/{self.version}@{self.user}/{self.channel}")
-        self.requires("robotkernel_service_helper/[*]@robotkernel/stable")
-        self.requires("robotkernel/[~=5]@robotkernel/stable")
+        self.requires("robotkernel_service_helper/[~=0 >=0.0.3]@robotkernel/unstable")
+        self.requires("robotkernel/5.0.43@robotkernel/unstable")

@@ -27,23 +27,16 @@
 #ifndef __SERVICE_PROVIDER__KEY_VALUE__PROVIDER_H__
 #define __SERVICE_PROVIDER__KEY_VALUE__PROVIDER_H__
 
+// Robotkernel includes
 #include "robotkernel/service_provider_base.h"
-#include "robotkernel/service_provider_intf.h"
-#include "robotkernel/service.h"
-#include "robotkernel/kernel.h"
 #include "robotkernel/log_base.h"
 
+// Service provider includes.
 #include "service_provider/key_value/base.h"
+#include "service_definitions.h"
 
 namespace service_provider {
-#ifdef EMACS
-}
-#endif
-
 namespace key_value {
-#ifdef EMACS
-}
-#endif
 
 // forward declaration
 class handler;
@@ -58,15 +51,16 @@ class provider : public robotkernel::service_provider_base<handler, base> {
             : service_provider_base(name, "key_value") {};
 };
 
-class handler : public robotkernel::log_base {
+class handler : 
+    public robotkernel::log_base,
+    public svc_base_read,
+    public svc_base_write,
+    public svc_base_list,
+    public svc_base_list_descriptions
+{
     public:
         typedef std::shared_ptr<service_provider::key_value::base> sp_kv_base_t;
         sp_kv_base_t _instance;
-
-	static const std::string service_definition_read;
-        static const std::string service_definition_write;
-        static const std::string service_definition_list;
-        static const std::string service_definition_list_descriptions;
 
         //! handler construction
         handler(const robotkernel::sp_service_interface_t& req);
@@ -74,51 +68,36 @@ class handler : public robotkernel::log_base {
         //! handler destruction
         ~handler();
 
-        //! service callback key-value read
+        //! svc_read
         /*!
-         * \param request service request data
-         * \parma response service response data
-         * \return success
+         * \param[in]   req     Service request data.
+         * \param[out]  resp    Service response data.
          */
-        int service_read(const robotkernel::service_arglist_t& request, 
-                robotkernel::service_arglist_t& response);
-
-        //! service callback key-value write
-        /*!
-         * \param request service request data
-         * \parma response service response data
-         * \return success
-         */
-        int service_write(const robotkernel::service_arglist_t& request, 
-                robotkernel::service_arglist_t& response);
-
-        //! service callback key-value list
-        /*!
-         * \param request service request data
-         * \parma response service response data
-         * \return success
-         */
-        int service_list(const robotkernel::service_arglist_t& request, 
-                robotkernel::service_arglist_t& response);
+        virtual void svc_read(const struct svc_req_read& req, struct svc_resp_read& resp);
         
-        //! service callback key-value list descriptions
+        //! svc_write
         /*!
-         * \param request service request data
-         * \parma response service response data
-         * \return success
+         * \param[in]   req     Service request data.
+         * \param[out]  resp    Service response data.
          */
-        int service_list_descriptions(const robotkernel::service_arglist_t& request, 
-                robotkernel::service_arglist_t& response);
+        virtual void svc_write(const struct svc_req_write& req, struct svc_resp_write& resp);
+
+        //! svc_list
+        /*!
+         * \param[in]   req     Service request data.
+         * \param[out]  resp    Service response data.
+         */
+        virtual void svc_list(const struct svc_req_list& req, struct svc_resp_list& resp);
+        
+        //! svc_list_descriptions
+        /*!
+         * \param[in]   req     Service request data.
+         * \param[out]  resp    Service response data.
+         */
+        virtual void svc_list_descriptions(const struct svc_req_list_descriptions& req, struct svc_resp_list_descriptions& resp);
 };
 
-#ifdef EMACS
-{
-#endif
 }; // namespace key_value
-
-#ifdef EMACS
-{
-#endif
 }; // namespace service_provider
 
 #endif // __SERVICE_PROVIDER__KEY_VALUE__PROVIDER_H__
