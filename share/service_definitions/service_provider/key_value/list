@@ -1,4 +1,4 @@
-name: service_provider_key_value/list
+name: service_provider/key_value/list
 response:
 - vector/uint32_t: keys
 - vector/string: names

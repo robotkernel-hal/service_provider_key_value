@@ -1,4 +1,4 @@
-name: service_provider_key_value/read
+name: service_provider/key_value/read
 request:
 - vector/uint32_t: keys
 response:

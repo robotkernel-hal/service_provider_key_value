@@ -1,4 +1,4 @@
-name: service_provider_key_value/list_descriptions
+name: service_provider/key_value/list_descriptions
 response:
 - vector/string: description
 - vector/string: unit
