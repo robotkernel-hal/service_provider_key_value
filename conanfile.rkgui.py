@@ -20,4 +20,5 @@ class service_provider_key_value_python_rkgui(ConanFile):
 
     def package_info(self):
         self.env_info.PYTHONPATH.append(os.path.join(self.package_folder, os.path.dirname(self.pure_python_folder)))
+        self.env_info.PYTHONPATH.append(os.path.join(self.package_folder, self.pure_python_folder))
     
