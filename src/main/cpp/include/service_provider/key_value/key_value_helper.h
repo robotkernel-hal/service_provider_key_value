@@ -303,6 +303,11 @@ inline void key_value_eval<bool>(bool* ptr, std::string repr) {
 }
 
 template<>
+inline void key_value_eval<double>(double* ptr, std::string repr) {
+    *ptr = strtod(repr.c_str(), NULL);
+}
+
+template<>
 inline void key_value_eval<float>(float* ptr, std::string repr) {
     *ptr = atof(repr.c_str());
 }
@@ -354,6 +359,11 @@ inline std::string key_value_repr<bool>(bool& value) {
     if(value)
         return "True";
     return "False";
+}
+
+template<>
+inline std::string key_value_repr<double>(double& value) {
+    return string_util::format_string("%f", value);
 }
 
 template<>
