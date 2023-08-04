@@ -320,6 +320,8 @@ class interface_key_value(helpers.service_provider_view, helpers.builder_base):
                 parent = [new_parent]
                 prefix = [display_name]
 
+        self.tv.expand_all()
+
     def _update_key_names(self):
         method_name = "%s_%s_list" % self.current_device
         if not hasattr(self, method_name):
@@ -598,7 +600,7 @@ class interface_key_value(helpers.service_provider_view, helpers.builder_base):
         set_active_group_item("format", format, self._display_formats)
         set_active_group_item("byteorder", byte_order, self._display_byte_order)
         self.is_format_all = False
-        self.kv_popup.popup(None, None, None, ev.button, ev.time)
+        self.kv_popup.popup(None, None, None, None, ev.button, ev.time)
         return True
 
     def kv_popup_done(self, *args):

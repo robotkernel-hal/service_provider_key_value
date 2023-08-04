@@ -5,7 +5,6 @@
   <object class="GtkBox" id="key_value_box">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
-    <property name="border-width">4</property>
     <property name="orientation">vertical</property>
     <property name="spacing">4</property>
     <child>
@@ -165,7 +164,6 @@
             <property name="visible">True</property>
             <property name="can-focus">True</property>
             <property name="enable-search">False</property>
-            <property name="hover-expand">True</property>
             <property name="enable-grid-lines">horizontal</property>
             <property name="enable-tree-lines">True</property>
             <signal name="button-press-event" handler="on_key_value_tv_button_press_event" swapped="no"/>
