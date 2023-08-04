@@ -252,8 +252,7 @@ class interface_key_value(helpers.service_provider_view, helpers.builder_base):
         return ".".join(name)
 
     def on_all_format_btn_pressed(self, widget, ev):
-        logger.warning("on_all_format_btn_pressed(): Handler not implemented, skipping")
-        return True
+        return self.all_format_btn_press(widget, ev)
 
     def on_key_value_tv_row_expanded(self, tv, iter, path):
         name = self._find_prefix_name(iter)
@@ -693,11 +692,11 @@ class interface_key_value(helpers.service_provider_view, helpers.builder_base):
 
     def all_format_btn_press(self, btn, ev):
         self.is_format_all = True
-        self.kv_popup.popup(None, None, None, ev.button, ev.time)
+        self.kv_popup.popup(None, None, None, None, button=ev.button, activate_time=ev.time)
         return False
 
     def unit_conv_btn_press(self, btn, ev):
-        self.unit_conv_popup.popup(None, None, None, ev.button, ev.time)
+        self.unit_conv_popup.popup(None, None, None, None, button=ev.button, activate_time=ev.time)
         return False
 
     unit_conversions = (
