@@ -320,8 +320,6 @@ class interface_key_value(helpers.service_provider_view, helpers.builder_base):
                 parent = [new_parent]
                 prefix = [display_name]
 
-        self.tv.expand_all()
-
     def _update_key_names(self):
         method_name = "%s_%s_list" % self.current_device
         if not hasattr(self, method_name):
@@ -505,6 +503,12 @@ class interface_key_value(helpers.service_provider_view, helpers.builder_base):
         self.model.row_changed(path, self.model.get_iter(path))
         self._queue_read(self.model[path][3], path, 50)
         return True
+
+    def on_expand_all_btn_clicked(self, btn):
+        self.tv.expand_all()
+
+    def on_collapse_all_btn_clicked(self, btn):
+        self.tv.collapse_all()
 
     def on_refresh(self, btn):
         if self.current_device is None:
