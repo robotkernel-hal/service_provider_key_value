@@ -39,3 +39,6 @@ class MainProject(ConanFile):
             self.env_info.LN_MESSAGE_DEFINITION_DIRS.append(msgdef_dir)
         self.runenv_info.append_path("LN_MESSAGE_DEFINITION_DIRS", msgdef_dir)
         self.buildenv_info.append_path("LN_MESSAGE_DEFINITION_DIRS", msgdef_dir)
+
+        # This package is not providing any includes
+        self.cpp_info.includedirs = []
