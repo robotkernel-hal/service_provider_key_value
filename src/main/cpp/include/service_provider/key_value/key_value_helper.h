@@ -27,7 +27,6 @@
 #ifndef KEY_VALUE_HELPER_H
 #define KEY_VALUE_HELPER_H
 
-#include <robotkernel/kernel.h>
 #include <string>
 #include <list>
 #include <map>
