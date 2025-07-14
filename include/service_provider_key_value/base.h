@@ -6,39 +6,32 @@
 // vim: tabstop=4 softtabstop=4 shiftwidth=4 expandtab:
 
 /*
- * This file is part of robotkernel.
+ * This file is part of service_provider_key_value.
  *
- * robotkernel is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * robotkernel is distributed in the hope that it will be useful,
+ * service_provider_key_value is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ * 
+ * service_provider_key_value is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with robotkernel.  If not, see <http://www.gnu.org/licenses/>.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with service_provider_key_value; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef __SERVICE_PROVIDER__KEY_VALUE__BASE__H__
-#define __SERVICE_PROVIDER__KEY_VALUE__BASE__H__
+#ifndef SERVICE_PROVIDER_KEY_VALUE__BASE_H
+#define SERVICE_PROVIDER_KEY_VALUE__BASE_H
 
 #include <list>
 #include <vector>
 
 #include "robotkernel/service_interface.h"
 
-namespace service_provider {
-#ifdef EMACS
-}
-#endif
-
-namespace key_value {
-#ifdef EMACS
-}
-#endif
+namespace service_provider_key_value {
 
 typedef struct key_value_transfer {
     std::vector<uint32_t> keys;    
@@ -97,15 +90,7 @@ class base :
         
 inline base::~base() { }
 
-#ifdef EMACS
-{
-#endif
-}; // namespace key_value
+}; // namespace service_provider_key_value
 
-#ifdef EMACS
-{
-#endif
-}; // namespace service_provider
-
-#endif // __SERVICE_PROVIDER__KEY_VALUE__BASE__H__
+#endif // SERVICE_PROVIDER_KEY_VALUE__BASE_H
 

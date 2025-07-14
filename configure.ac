@@ -40,7 +40,7 @@ AC_CHECK_LIB(dl, dlopen)
 
 AC_CONFIG_FILES([
         Makefile
-        src/main/cpp/Makefile
+        src/Makefile
         service_provider_key_value.pc
 ])
 

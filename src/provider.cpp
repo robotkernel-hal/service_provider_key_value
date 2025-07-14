@@ -8,20 +8,21 @@
 // vim: tabstop=4 softtabstop=4 shiftwidth=4 expandtab:
 
 /*
- * This file is part of robotkernel.
+ * This file is part of service_provider_key_value.
  *
- * robotkernel is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * robotkernel is distributed in the hope that it will be useful,
+ * service_provider_key_value is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ * 
+ * service_provider_key_value is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with robotkernel.  If not, see <http://www.gnu.org/licenses/>.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with service_provider_key_value; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
 #include "provider.h"
@@ -29,26 +30,21 @@
 
 #include "robotkernel/exceptions.h"
 
-#include <string_util/string_util.h>
+#include "service_provider_key_value/base.h"
 
-#include "service_provider/key_value/base.h"
-
-SERVICE_PROVIDER_DEF(key_value, service_provider::key_value::provider);
+SERVICE_PROVIDER_DEF(key_value, service_provider_key_value::provider);
 
 using namespace std;
-using namespace std::placeholders;
 using namespace robotkernel;
-using namespace service_provider;
-using namespace string_util;
-using namespace key_value;
+using namespace service_provider_key_value;
 
 //! handler construction
-key_value::handler::handler(const robotkernel::sp_service_interface_t& req)
+handler::handler(const robotkernel::sp_service_interface_t& req)
     : log_base(req->owner, "key_value", req->device_name) 
 {
-    _instance = std::dynamic_pointer_cast<service_provider::key_value::base>(req);
+    _instance = std::dynamic_pointer_cast<service_provider_key_value::base>(req);
     if (!_instance) {
-        throw str_exception("wrong base class");
+        throw runtime_error(string("wrong base class"));
     }
 
     add_svc_read(_instance->owner, _instance->device_name + ".read");
@@ -58,7 +54,7 @@ key_value::handler::handler(const robotkernel::sp_service_interface_t& req)
 }
 
 //! handler destruction
-key_value::handler::~handler() {
+handler::~handler() {
 };
 
 //! svc_read
@@ -66,7 +62,7 @@ key_value::handler::~handler() {
  * \param[in]   req     Service request data.
  * \param[out]  resp    Service response data.
  */
-void key_value::handler::svc_read(const struct svc_req_read& req, struct svc_resp_read& resp) {
+void handler::svc_read(const struct svc_req_read& req, struct svc_resp_read& resp) {
     key_value_transfer_t t;
     t.keys.assign(req.keys.begin(), req.keys.end());
     
@@ -83,7 +79,7 @@ void key_value::handler::svc_read(const struct svc_req_read& req, struct svc_res
  * \param[in]   req     Service request data.
  * \param[out]  resp    Service response data.
  */
-void key_value::handler::svc_write(const struct svc_req_write& req, struct svc_resp_write& resp) {
+void handler::svc_write(const struct svc_req_write& req, struct svc_resp_write& resp) {
     key_value_transfer_t t;
     t.keys.assign(req.keys.begin(), req.keys.end());
     for (auto val : req.values) {
@@ -102,7 +98,7 @@ void key_value::handler::svc_write(const struct svc_req_write& req, struct svc_r
  * \param[in]   req     Service request data.
  * \param[out]  resp    Service response data.
  */
-void key_value::handler::svc_list(const struct svc_req_list& req, struct svc_resp_list& resp) {
+void handler::svc_list(const struct svc_req_list& req, struct svc_resp_list& resp) {
     key_value_transfer_t t;
     
     try { 
@@ -119,7 +115,7 @@ void key_value::handler::svc_list(const struct svc_req_list& req, struct svc_res
  * \param[in]   req     Service request data.
  * \param[out]  resp    Service response data.
  */
-void key_value::handler::svc_list_descriptions(const struct svc_req_list_descriptions& req, struct svc_resp_list_descriptions& resp) {
+void handler::svc_list_descriptions(const struct svc_req_list_descriptions& req, struct svc_resp_list_descriptions& resp) {
     std::vector<key_value_description_t> t;
     
     try { 
