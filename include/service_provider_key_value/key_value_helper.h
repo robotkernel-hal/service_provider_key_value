@@ -32,9 +32,8 @@
 #include <map>
 #include <algorithm>
 
+#include "robotkernel/helpers.h"
 #include "service_provider_key_value/base.h"
-
-#include <string_util/string_util.h>
 
 namespace service_provider_key_value {
 
@@ -151,7 +150,7 @@ class slave :
 
         void check_exists(std::string name) {
             if(key_map.find(name) != key_map.end())
-                throw str_exception_tb("key %s already defined!", string_util::repr(name).c_str());
+                throw str_exception_tb("key \"%s\" already defined!", name.c_str());
         }
         void _add_key(key_base* new_key) {
             keys.push_back(new_key);
@@ -350,9 +349,7 @@ inline void eval<uint64_t>(uint64_t* ptr, std::string repr) {
 
 template<>
 inline void eval<std::string>(std::string* ptr, std::string repr) {
-    string_util::py_value* v = string_util::eval_full(repr);
-    *ptr = std::string(*v);
-    delete v;
+    *ptr = robotkernel::string_printf("\"%s\"", repr.c_str());
 }
 
 template<>
@@ -364,57 +361,57 @@ inline std::string repr<bool>(bool& value) {
 
 template<>
 inline std::string repr<double>(double& value) {
-    return string_util::format_string("%f", value);
+    return robotkernel::string_printf("%f", value);
 }
 
 template<>
 inline std::string repr<float>(float& value) {
-    return string_util::format_string("%f", value);
+    return robotkernel::string_printf("%f", value);
 }
 
 template<>
 inline std::string repr<short>(short& value) {
-    return string_util::format_string("%hd", value);
+    return robotkernel::string_printf("%hd", value);
 }
 
 template<>
 inline std::string repr<unsigned short>(unsigned short& value) {
-    return string_util::format_string("%hu", value);
+    return robotkernel::string_printf("%hu", value);
 }
 
 template<>
 inline std::string repr<unsigned char>(unsigned char& value) {
-    return string_util::format_string("%hu", value);
+    return robotkernel::string_printf("%hu", value);
 }
 
 template<>
 inline std::string repr<int>(int& value) {
-    return string_util::format_string("%d", value);
+    return robotkernel::string_printf("%d", value);
 }
 
 template<>
 inline std::string repr<unsigned int>(unsigned int& value) {
-    return string_util::format_string("%u", value);
+    return robotkernel::string_printf("%u", value);
 }
 
 template<>
 inline std::string repr<std::string>(std::string& value) {
-    return string_util::repr(value);
+    return robotkernel::string_printf("\"%s\"", value.c_str());
 }
 
 template<>
 inline std::string repr<char *>(char *& value) {
-    return string_util::format_string("%s", value);
+    return robotkernel::string_printf("%s", value);
 }
 
 template<>
 inline std::string repr<int64_t>(int64_t& value) {
-    return string_util::format_string("%lld", value);
+    return robotkernel::string_printf("%lld", value);
 }
 
 template<>
 inline std::string repr<uint64_t>(uint64_t& value) {
-    return string_util::format_string("%llu", value);
+    return robotkernel::string_printf("%llu", value);
 }
 
 inline void key_base::set_value(std::string repr) {
