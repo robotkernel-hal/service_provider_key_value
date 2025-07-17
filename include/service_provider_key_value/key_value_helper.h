@@ -32,7 +32,7 @@
 #include <map>
 #include <algorithm>
 
-#include "service_provider/key_value/base.h"
+#include "service_provider_key_value/base.h"
 
 #include <string_util/string_util.h>
 
