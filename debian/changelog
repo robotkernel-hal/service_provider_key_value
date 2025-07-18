@@ -1,0 +1,362 @@
+service-provider-key-value (6.0.0~pre1) unstable; urgency=low
+
+  * prep: 6.0.0
+
+ -- Burger, Robert <robert.burger@dlr.de>  Wed, 23 Oct 2024 09:35:47 +0200
+
+service-provider-key-value (5.1.6) unstable; urgency=low
+
+  * Merge pull request #7 from robotkernel/pkg-clear_include_dirs
+  * package: clear includedirs default
+
+ -- Burger, Robert <robert.burger@dlr.de>  Wed, 23 Oct 2024 09:35:47 +0200
+
+service-provider-key-value (5.1.5) unstable; urgency=low
+
+  * fix: conan2 compat
+  * updated conanfile for msgdefs and rkgui
+  * conan2 syntax
+
+ -- Maximilian Mühlbauer <maximilian.muehlbauer@dlr.de>  Tue, 30 Jan 2024 14:51:51 +0100
+
+service-provider-key-value (5.1.4) unstable; urgency=low
+
+  * added expand/collapse buttons
+
+ -- Robert Burger <robert.burger@dlr.de>  Fri, 11 Aug 2023 07:00:43 +0200
+
+service-provider-key-value (5.1.3) unstable; urgency=low
+
+  * expanding tv on default
+  * fixed gtk3 gui
+
+ -- Robert Burger <robert.burger@dlr.de>  Fri, 4 Aug 2023 08:28:32 +0200
+
+service-provider-key-value (5.1.2) unstable; urgency=low
+
+  * Merge branch 'master' of rmc-github.robotic.dlr.de:robotkernel/service-provider-key-value
+  * fixed service definition names
+  * added double conversion
+  * switched to robotkernel_service_helper stable
+  * build against stable robotkernel
+  * using new service_generate with base classes
+
+ -- Robert Burger <robert.burger@dlr.de>  Thu, 3 Aug 2023 09:10:32 +0200
+
+service-provider-key-value (5.1.1) unstable; urgency=low
+
+  * fix: python path
+  * fix: rename python_rkgui to only rkgui due to stupid 51 char limitation of conan
+  * fix: name
+
+ -- Robert Burger <robert.burger@dlr.de>  Fri, 24 Feb 2023 13:36:11 +0100
+
+service-provider-key-value (5.1.0) unstable; urgency=low
+
+  * add: missing conanfile
+  * change: releasing python_rkgui as separate package
+  * Merge remote-tracking branch 'origin/feat/py3-support' into feat/py3-support
+  * add url to conanfile to reduce noise
+  * fix: add encoding to yaml file
+  * python3: encode data as utf8
+  * Merge pull request #4 from mueh-mm/feat/py3-support
+  * fix: python3 needs open instead of file
+  * feat/py3: convert code with futurize
+  * chore: update to python3 format strings
+  * feat/python3
+  * feat/Gtk3: fix up GrkTreeView method call API
+  * feat/gtk3: adapt to API change in Gtk3
+  * feat/gtk3: add dummy for missing button_press_event handler
+  * fix: API changes for Gtk3
+  * chore: avoid dependency clash during testing
+  * convert to Gtk3
+  * convert to Gtk3
+  * add logging
+
+ -- Robert Burger <robert.burger@dlr.de>  Mon, 20 Feb 2023 12:42:46 +0100
+
+service-provider-key-value (5.0.6) unstable; urgency=low
+
+  * ADD: showing key column
+
+ -- Robert Burger <robert.burger@dlr.de>  Thu, 17 Feb 2022 06:56:22 +0100
+
+service-provider-key-value (5.0.5) unstable; urgency=low
+
+  * FIX: message def prefix
+
+ -- Robert Burger <robert.burger@dlr.de>  Fri, 4 Feb 2022 10:21:00 +0100
+
+service-provider-key-value (5.0.4) unstable; urgency=low
+
+  * Merge branch 'master' of rmc-github.robotic.dlr.de:robotkernel/service-provider-key-value
+  * CHANGE: switching to yaml service definition files
+  * fix: changes for latest bridge_ln
+  * fix: changes for new robotkernel ln bridge
+
+ -- Robert Burger <robert.burger@dlr.de>  Fri, 4 Feb 2022 09:24:13 +0100
+
+service-provider-key-value (5.0.3) unstable; urgency=low
+
+  * ADD: missing md source
+  * CHANGE: generation of message defs
+  * FIX: last changes before corona
+  * added post install rule
+  * fixed prev merge
+  * added rk_gui_plugin
+  * switching to defaults
+  * using conan template
+  * build: updated build/ci files for cissy 1.0->2.0
+  * new scripts
+  * honour DESTDIR
+  * provide libkey_value_helper.pc file
+  * compile against LN 0.12
+  * Merge remote-tracking branch 'origin/master' into sara-develop
+
+ -- Robert Burger <robert.burger@dlr.de>  Thu, 2 Dec 2021 14:31:57 +0100
+
+service-provider-key-value (5.0.2) unstable; urgency=low
+
+  * Merge branch 'release/5.0.2'
+  * updated build targets
+  * Merge branch 'release/5.0.2' of rmc-github.robotic.dlr.de:robotkernel/service-provider-key-value into release/5.0.2
+  * added architectures
+  * added architectures
+  * added architectures
+  * added architectures
+  * fixed jenkinsfile
+  * fixed jenkinsfile
+  * added architectures
+  * added architectures
+  * build: updated build/ci files for cissy 1.0->2.0
+  * build: updated build/ci files for cissy 1.0->2.0
+  * build: updated build/ci files for cissy 1.0->2.0
+  * build: updated build/ci files for cissy 1.0->2.0
+  * new conan recipe
+  * changed md names
+  * changed md names
+  * added some more repr
+  * added read_only key_value_key
+  * updated jenkins file
+  * fixed deps, added build archs
+  * updated project properties
+  * added jenkins stuff
+  * fixed dependency version
+
+ -- Robert Burger <robert.burger@dlr.de>  Wed, 23 Oct 2019 14:19:32 +0200
+
+service-provider-key-value (5.0.1) unstable; urgency=low
+
+  * Prep 5.0.0 release
+  * Prep 5.0.0 release
+  * added missing key_value_eval and key_value_repr type
+  * added doc
+  * auto commit
+  * fixed version
+  * set supported languages to c++
+  * latest
+  * inc version
+  * generated files fixes
+  * fixed lnc include file
+  * Merge branch 'robotkernel-5' of rmc-github.robotic.dlr.de:robotkernel/interface_key_value into robotkernel-5
+  * fixed interface
+  * fixed dependencies
+  * fixed service definition to match yaml 1.2 spec
+  * added algorithm include
+  * moved all source to key_value_helper header
+  * moved all source to key_value_helper header
+
+ -- Robert Burger <robert.burger@dlr.de>  Mon, 12 Mar 2018 09:20:42 +0100
+
+service-provider-key-value (5.0.0) unstable; urgency=low
+
+  * changed to bet0
+  * fixed tolower construct
+  * added desc and doc to project properties
+  * renamed inc.lnc
+  * removed ln message defs
+  * cleaned up key value helper
+  * fixed for sara-develop merge
+  * Merge branch 'sara-develop' into robotkernel-5
+  * fixed service prefix
+  * latest device name fixes
+  * fixes for latest rk changes
+  * added new dependency resolution
+  * autotool build
+  * fixed build
+  * latest rk-5 changes
+  * latest rk-5 changes
+  * fixed template paramteter
+  * changes for robotkernel-5
+  * no_ln work
+  * added simple key value list_description svc's
+  * added key_value python wrapper
+  * added emacs .dir-locals for roberts style
+  * migrate to 0.11 ln_generate
+  * Merge branch 'sara-develop' of rmc-github.robotic.dlr.de:robotkernel/interface_key_value into sara-develop
+  * fixed bug with key_map[name] using name of slave not of key
+  * allow to specify ln_service_group via yaml config
+  * handle_key_value_request() returns int
+  * support (unsigned) int
+
+ -- Robert Burger <robert.burger@dlr.de>  Fri, 22 Sep 2017 09:47:49 +0200
+
+service-provider-key-value (4.1.0) unstable; urgency=low
+
+  * 'automated_commit'
+  * 'scripts_updated'
+  * 'scripts_updated'
+  * Merge branch 'master' of rmc-github.robotic.dlr.de:robotkernel/interface_key_value
+  * 'scripts_updated'
+  * added .pc file, fixed non-host-python
+  * 'replaced_with_default'
+  * new gitignores
+  * fixed build
+  * 'scripts_updated'
+  * 'scripts_updated'
+  * 'scripts_updated'
+
+ -- Robert Burger <robert.burger@dlr.de>  Wed, 30 Nov 2016 10:28:05 +0100
+
+service-provider-key-value (4.0.5) unstable; urgency=low
+
+  * version increment
+
+ -- Jan Cremer <jan.cremer@dlr.de>  Fri, 12 Aug 2016 10:30:13 +0200
+
+service-provider-key-value (4.0.4) unstable; urgency=low
+
+  * added osl42
+
+ -- Jan Cremer <jan.cremer@dlr.de>  Thu, 11 Aug 2016 11:00:04 +0200
+
+service-provider-key-value (4.0.3) unstable; urgency=low
+
+  * fixed build
+  * added gitignore file
+  * fixed build
+  * 'scripts_updated'
+  * "transforming"
+  * 'scripts_updated'
+  * Removed lib_stringutil from makefile to avoid SIGSEV on vxworks6.9.3
+  * updated scripts
+
+ -- Jan Cremer <jan.cremer@dlr.de>  Thu, 11 Aug 2016 10:54:27 +0200
+
+service-provider-key-value (4.0.2) unstable; urgency=low
+
+  * put generated ln_messages into own namespace
+  * update to newest scripts
+  * moved msg_defs to share/ln/message_definitions
+  * added submodule scripts
+
+ -- Florian Schmidt <florian.schmidt@dlr.de>  Tue, 26 Apr 2016 10:27:01 +0200
+
+service-provider-key-value (4.0.1) unstable; urgency=low
+
+  * added ignore
+  * removed ptfile
+  * inc version
+
+ -- Robert Burger <robert.burger@dlr.de>  Fri, 2 Oct 2015 11:50:45 +0000
+
+service-provider-key-value (4.0.0) unstable; urgency=low
+
+  * removed the angstrom
+  * switched yamlcpp 0.5.2 using interface_base prep 4.0.0
+  * switched to interface_base switched to yamlcpp 0.5.2
+  * add ignores
+  * moved makefile removed m4
+
+ -- Robert Burger <robert.burger@dlr.de>  Thu, 17 Sep 2015 05:01:40 +0000
+
+service-provider-key-value (3.1.4) unstable; urgency=low
+
+  * prep 3.1.4
+  * prep 3.1.4: ld-library-path was missing
+
+ -- Florian Schmidt <Florian.Schmidt@dlr.de>  Tue, 11 Aug 2015 11:35:02 +0000
+
+service-provider-key-value (3.1.3) unstable; urgency=low
+
+  * prep 3.1.3
+
+ -- Florian Schmidt <Florian.Schmidt@dlr.de>  Wed, 5 Aug 2015 05:24:09 +0000
+
+service-provider-key-value (3.1.2) unstable; urgency=low
+
+  * prep 3.1.2
+  * prep 3.1.2
+  * prep 3.1.2
+  * prep 3.1.2
+  * prep 3.1.2
+  * prep 3.1.2, added libkey_value_helper
+
+ -- Florian Schmidt <Florian.Schmidt@dlr.de>  Wed, 5 Aug 2015 05:14:31 +0000
+
+service-provider-key-value (3.1.1) unstable; urgency=low
+
+  * prep 3.1.1
+  * prep 3.1.1
+  * added ubuntu12.04-armhf-gcc4.x arch
+
+ -- Florian Schmidt <Florian.Schmidt@dlr.de>  Sat, 16 May 2015 08:09:12 +0000
+
+service-provider-key-value (3.1.0) unstable; urgency=low
+
+  * fixed install rules
+  * added module_intf.h
+
+ -- Robert Burger <robert.burger@dlr.de>  Mon, 2 Feb 2015 06:37:12 +0000
+
+service-provider-key-value (3.0.4) unstable; urgency=low
+
+  * prep 3.0.4
+  * fixed loglevel to interface ones
+  * shorted build by message, have --with-debug configure flag, pass LN_BASE from user env, install .inc.lnc file
+  * fix error messages having a newline at the end
+
+ -- Robert Burger <robert.burger@dlr.de>  Fri, 5 Dec 2014 09:10:55 +0000
+
+service-provider-key-value (3.0.2) unstable; urgency=low
+
+  * bug fix release
+  * added rmpm and local release to inc.lnc
+
+ -- Robert Burger <robert.burger@dlr.de>  Mon, 8 Sep 2014 11:21:37 +0000
+
+service-provider-key-value (3.0.1) unstable; urgency=low
+
+  * updated build, ln include file, bugfix release
+  * updated build system
+
+ -- Robert Burger <robert.burger@dlr.de>  Thu, 7 Aug 2014 05:53:35 +0000
+
+service-provider-key-value (3.0.0) unstable; urgency=low
+
+  * new release to match rk version
+
+ -- Robert Burger <robert.burger@dlr.de>  Fri, 1 Aug 2014 07:52:20 +0000
+
+service-provider-key-value (1.0.1) unstable; urgency=low
+
+  * fixed ptfile
+  * bug fix release, forgot md's
+
+ -- Robert Burger <robert.burger@dlr.de>  Fri, 1 Aug 2014 05:27:26 +0000
+
+service-provider-key-value (1.0.0) unstable; urgency=low
+
+  * fixed ptfile
+  * fixed ptfile
+  * fixed doc
+  * fixed build as external module
+  * fixed build system
+  * fixed build system
+  * added autogen file
+  * moved key_value stuff
+  * imported from: https://rmsvn01.robotic.dlr.de/repos/f_soft_src/robotkernel/trunk/src/interfaces/key_value rev : 43477
+  * creating svn directory 'https://rmsvn01.robotic.dlr.de/software/robotkernel/src/key_value/trunk' [rmpm admintool (burger_r, 2014-07-31-14-31-53)]
+
+ -- Robert Burger <robert.burger@dlr.de>  Fri, 1 Aug 2014 05:09:00 +0000
+

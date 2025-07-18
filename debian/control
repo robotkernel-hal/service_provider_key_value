@@ -1,0 +1,23 @@
+Source: service-provider-key-value
+Priority: optional
+Maintainer: Robert Burger <robert.burger@dlr.de>
+Build-Depends: debhelper-compat (= 13), autotools-dev
+Standards-Version: 4.5.1
+Section: libs
+Homepage: https://www.burger-system.de/robotkernel/service_provider_key_value
+Vcs-Browser: https://github.com/robotkernel-hal/service_provider_key_value.git
+Vcs-Git: https://github.com/robotkernel-hal/service_provider_key_value.git
+Rules-Requires-Root: no
+
+Package: service-provider-key-value-dev
+Section: libdevel
+Architecture: any
+Multi-Arch: same
+Depends: robotkernel-dev (= ${binary:Version}), ${misc:Depends}
+Description: TODO
+
+Package: service-provider-key-value
+Architecture: any
+Multi-Arch: same
+Depends: robotkernel ${misc:Depends}
+Description: TODO
