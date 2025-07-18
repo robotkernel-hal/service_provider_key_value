@@ -193,14 +193,14 @@ class slave :
          *                          with keys you want to read, the values will 
          *                          be returned in the values vector.
          */
-        void read(service_provider_key_value::key_value_transfer_t& transfer);
+        virtual void key_value_read(service_provider_key_value::key_value_transfer_t& transfer) override;
 
         //! write key value pairs
         /*!
          * \param[in] transfer      Key value request. Key and values vector has to 
          *                          be filled with keys and values you want to write.
          */
-        void write(const service_provider_key_value::key_value_transfer_t& transfer);
+        virtual void key_value_write(const service_provider_key_value::key_value_transfer_t& transfer) override;
 
         //! list keys with names
         /*!
@@ -208,15 +208,15 @@ class slave :
          *                          all available key, values vector will be filled 
          *                          with their names.
          */
-        void list(service_provider_key_value::key_value_transfer_t& transfer);
+        virtual void key_value_list(service_provider_key_value::key_value_transfer_t& transfer) override;
 
         //! list descriptions
         /*!
          * \param[out] transfer     Key value request. The data vector will returned the
          *                          descriptions of all available keys.
          */
-        void list_descriptions(
-                std::vector<service_provider_key_value::key_value_description_t>& data);
+        virtual void key_value_list_descriptions(
+                std::vector<service_provider_key_value::key_value_description_t>& data) override;
 };
 
 inline void slave::delete_keys() {
@@ -229,7 +229,7 @@ inline void slave::delete_keys() {
 }
 
 // read key value pairs
-inline void slave::read(
+inline void slave::key_value_read(
         service_provider_key_value::key_value_transfer_t& t) 
 {
     t.values.resize(t.keys.size());
@@ -247,7 +247,7 @@ inline void slave::read(
 }
 
 // write key value pairs
-inline void slave::write(
+inline void slave::key_value_write(
         const service_provider_key_value::key_value_transfer_t& t)
 {
     if (t.values.size() != t.keys.size())
@@ -267,7 +267,7 @@ inline void slave::write(
 }
 
 // list keys with names
-inline void slave::list(
+inline void slave::key_value_list(
         service_provider_key_value::key_value_transfer_t& t) 
 {
     t.keys.resize(keys.size());
@@ -282,7 +282,7 @@ inline void slave::list(
 }
 
 // list descriptions
-inline void slave::list_descriptions(
+inline void slave::key_value_list_descriptions(
         std::vector<service_provider_key_value::key_value_description_t>& data) 
 {
     data.resize(keys.size());
