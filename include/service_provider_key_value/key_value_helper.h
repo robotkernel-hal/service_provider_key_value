@@ -31,6 +31,7 @@
 #include <list>
 #include <map>
 #include <algorithm>
+#include <stdexcept>
 
 #include "robotkernel/helpers.h"
 #include "service_provider_key_value/base.h"
@@ -150,7 +151,7 @@ class slave :
 
         void check_exists(std::string name) {
             if(key_map.find(name) != key_map.end())
-                throw str_exception_tb("key \"%s\" already defined!", name.c_str());
+                throw std::runtime_error(robotkernel::string_printf("key \"%s\" already defined!", name.c_str()));
         }
         void _add_key(key_base* new_key) {
             keys.push_back(new_key);
@@ -160,7 +161,7 @@ class slave :
         void delete_keys();
 
         virtual void handle_key_cb(std::string key, bool op_set, std::string& arg) {
-            throw str_exception_tb("slave::handle_key_cb not implemented!");
+            throw std::runtime_error(robotkernel::string_printf(("slave::handle_key_cb not implemented!"));
         }
 
         void add_key_bool(std::string name, bool* value, bool init, bool after_change_cb=false) {
@@ -237,8 +238,8 @@ inline void slave::read(
         uint32_t k = t.keys[i];
 
         if (k >= keys.size())
-            throw str_exception_tb("unknown key_id %d for slave %s!", 
-                    k, name.c_str());
+            throw std::runtime_error(robotkernel::string_printf(("unknown key_id %d for slave %s!", 
+                    k, name.c_str()));
 
         key_base* key = keys[k];
         t.values[i] = key->get_value();
@@ -250,15 +251,15 @@ inline void slave::write(
         const service_provider_key_value::key_value_transfer_t& t)
 {
     if (t.values.size() != t.keys.size())
-        throw str_exception_tb("write: key_value_transfer_t::values.size() "
-                "is %d and ::keys.size() is %d!", t.values.size(), t.keys.size());
+        throw std::runtime_error(robotkernel::string_printf("write: key_value_transfer_t::values.size() "
+                "is %d and ::keys.size() is %d!", t.values.size(), t.keys.size()));
 
     for (unsigned i = 0; i < t.keys.size(); ++i) {
         uint32_t k = t.keys[i];
 
         if (k >= keys.size())
-            throw str_exception_tb("unknown key_id %d for slave %s!", 
-                    k, name.c_str());
+            throw std::runtime_error(robotkernel::string_printf("unknown key_id %d for slave %s!", 
+                    k, name.c_str()));
 
         key_base* key = keys[k];
         key->set_value(t.values[i]);
