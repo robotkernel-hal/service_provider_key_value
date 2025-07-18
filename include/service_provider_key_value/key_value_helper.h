@@ -161,7 +161,7 @@ class slave :
         void delete_keys();
 
         virtual void handle_key_cb(std::string key, bool op_set, std::string& arg) {
-            throw std::runtime_error(robotkernel::string_printf(("slave::handle_key_cb not implemented!"));
+            throw std::runtime_error(robotkernel::string_printf("slave::handle_key_cb not implemented!"));
         }
 
         void add_key_bool(std::string name, bool* value, bool init, bool after_change_cb=false) {
@@ -238,7 +238,7 @@ inline void slave::read(
         uint32_t k = t.keys[i];
 
         if (k >= keys.size())
-            throw std::runtime_error(robotkernel::string_printf(("unknown key_id %d for slave %s!", 
+            throw std::runtime_error(robotkernel::string_printf("unknown key_id %d for slave %s!", 
                     k, name.c_str()));
 
         key_base* key = keys[k];
