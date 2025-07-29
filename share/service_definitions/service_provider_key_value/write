@@ -1,4 +1,4 @@
-name: service_provider/key_value/write
+name: service_provider_key_value/write
 request:
 - vector/uint32_t: keys
 - vector/string: values
