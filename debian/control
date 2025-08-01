@@ -14,10 +14,14 @@ Section: libdevel
 Architecture: any
 Multi-Arch: same
 Depends: robotkernel-dev (= ${binary:Version}), ${misc:Depends}
-Description: TODO
+Description: Robotkernel service provider to export key-value dictionary access services.
+  This service provider gains unified access to key-value dictionaries of robotkernel
+  modules. It support dictionary listing, reading and writing key-value pairs.
 
 Package: service-provider-key-value
 Architecture: any
 Multi-Arch: same
 Depends: robotkernel ${misc:Depends}
-Description: TODO
+Description: Robotkernel service provider to export key-value dictionary access services.
+  This service provider gains unified access to key-value dictionaries of robotkernel
+  modules. It support dictionary listing, reading and writing key-value pairs.
