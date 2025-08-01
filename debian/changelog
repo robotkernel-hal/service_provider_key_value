@@ -1,7 +1,8 @@
-service-provider-key-value (6.0.0~pre1) unstable; urgency=low
+service-provider-key-value (6.0.0~pre2) unstable; urgency=low
 
   * prep: 6.0.0
   * update: debian desc
+  * fix: debian dev package depends
 
  -- Burger, Robert <robert.burger@dlr.de>  Wed, 23 Oct 2024 09:35:47 +0200
 
