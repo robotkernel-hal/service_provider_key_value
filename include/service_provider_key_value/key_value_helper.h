@@ -252,7 +252,7 @@ inline void slave::key_value_write(
 {
     if (t.values.size() != t.keys.size())
         throw std::runtime_error(robotkernel::helpers::string_printf("write: key_value_transfer_t::values.size() "
-                "is %d and ::keys.size() is %d!", t.values.size(), t.keys.size()));
+                "is %zu and ::keys.size() is %zu!", t.values.size(), t.keys.size()));
 
     for (unsigned i = 0; i < t.keys.size(); ++i) {
         uint32_t k = t.keys[i];
@@ -407,12 +407,12 @@ inline std::string repr<char *>(char *& value) {
 
 template<>
 inline std::string repr<int64_t>(int64_t& value) {
-    return robotkernel::helpers::string_printf("%lld", value);
+    return robotkernel::helpers::string_printf("%zd", value);
 }
 
 template<>
 inline std::string repr<uint64_t>(uint64_t& value) {
-    return robotkernel::helpers::string_printf("%llu", value);
+    return robotkernel::helpers::string_printf("%zu", value);
 }
 
 inline void key_base::set_value(std::string repr) {
