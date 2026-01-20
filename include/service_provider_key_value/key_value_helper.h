@@ -151,7 +151,7 @@ class slave :
 
         void check_exists(std::string name) {
             if(key_map.find(name) != key_map.end())
-                throw std::runtime_error(robotkernel::string_printf("key \"%s\" already defined!", name.c_str()));
+                throw std::runtime_error(robotkernel::helpers::string_printf("key \"%s\" already defined!", name.c_str()));
         }
         void _add_key(key_base* new_key) {
             keys.push_back(new_key);
@@ -161,7 +161,7 @@ class slave :
         void delete_keys();
 
         virtual void handle_key_cb(std::string key, bool op_set, std::string& arg) {
-            throw std::runtime_error(robotkernel::string_printf("slave::handle_key_cb not implemented!"));
+            throw std::runtime_error(robotkernel::helpers::string_printf("slave::handle_key_cb not implemented!"));
         }
 
         void add_key_bool(std::string name, bool* value, bool init, bool after_change_cb=false) {
@@ -238,7 +238,7 @@ inline void slave::key_value_read(
         uint32_t k = t.keys[i];
 
         if (k >= keys.size())
-            throw std::runtime_error(robotkernel::string_printf("unknown key_id %d for slave %s!", 
+            throw std::runtime_error(robotkernel::helpers::string_printf("unknown key_id %d for slave %s!", 
                     k, name.c_str()));
 
         key_base* key = keys[k];
@@ -251,14 +251,14 @@ inline void slave::key_value_write(
         const service_provider_key_value::key_value_transfer_t& t)
 {
     if (t.values.size() != t.keys.size())
-        throw std::runtime_error(robotkernel::string_printf("write: key_value_transfer_t::values.size() "
+        throw std::runtime_error(robotkernel::helpers::string_printf("write: key_value_transfer_t::values.size() "
                 "is %d and ::keys.size() is %d!", t.values.size(), t.keys.size()));
 
     for (unsigned i = 0; i < t.keys.size(); ++i) {
         uint32_t k = t.keys[i];
 
         if (k >= keys.size())
-            throw std::runtime_error(robotkernel::string_printf("unknown key_id %d for slave %s!", 
+            throw std::runtime_error(robotkernel::helpers::string_printf("unknown key_id %d for slave %s!", 
                     k, name.c_str()));
 
         key_base* key = keys[k];
@@ -350,7 +350,7 @@ inline void eval<uint64_t>(uint64_t* ptr, std::string repr) {
 
 template<>
 inline void eval<std::string>(std::string* ptr, std::string repr) {
-    *ptr = robotkernel::string_printf("\"%s\"", repr.c_str());
+    *ptr = robotkernel::helpers::string_printf("\"%s\"", repr.c_str());
 }
 
 template<>
@@ -362,57 +362,57 @@ inline std::string repr<bool>(bool& value) {
 
 template<>
 inline std::string repr<double>(double& value) {
-    return robotkernel::string_printf("%f", value);
+    return robotkernel::helpers::string_printf("%f", value);
 }
 
 template<>
 inline std::string repr<float>(float& value) {
-    return robotkernel::string_printf("%f", value);
+    return robotkernel::helpers::string_printf("%f", value);
 }
 
 template<>
 inline std::string repr<short>(short& value) {
-    return robotkernel::string_printf("%hd", value);
+    return robotkernel::helpers::string_printf("%hd", value);
 }
 
 template<>
 inline std::string repr<unsigned short>(unsigned short& value) {
-    return robotkernel::string_printf("%hu", value);
+    return robotkernel::helpers::string_printf("%hu", value);
 }
 
 template<>
 inline std::string repr<unsigned char>(unsigned char& value) {
-    return robotkernel::string_printf("%hu", value);
+    return robotkernel::helpers::string_printf("%hu", value);
 }
 
 template<>
 inline std::string repr<int>(int& value) {
-    return robotkernel::string_printf("%d", value);
+    return robotkernel::helpers::string_printf("%d", value);
 }
 
 template<>
 inline std::string repr<unsigned int>(unsigned int& value) {
-    return robotkernel::string_printf("%u", value);
+    return robotkernel::helpers::string_printf("%u", value);
 }
 
 template<>
 inline std::string repr<std::string>(std::string& value) {
-    return robotkernel::string_printf("\"%s\"", value.c_str());
+    return robotkernel::helpers::string_printf("\"%s\"", value.c_str());
 }
 
 template<>
 inline std::string repr<char *>(char *& value) {
-    return robotkernel::string_printf("%s", value);
+    return robotkernel::helpers::string_printf("%s", value);
 }
 
 template<>
 inline std::string repr<int64_t>(int64_t& value) {
-    return robotkernel::string_printf("%lld", value);
+    return robotkernel::helpers::string_printf("%lld", value);
 }
 
 template<>
 inline std::string repr<uint64_t>(uint64_t& value) {
-    return robotkernel::string_printf("%llu", value);
+    return robotkernel::helpers::string_printf("%llu", value);
 }
 
 inline void key_base::set_value(std::string repr) {
