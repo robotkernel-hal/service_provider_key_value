@@ -232,17 +232,13 @@ inline void slave::delete_keys() {
 inline void slave::key_value_read(
         service_provider_key_value::key_value_transfer_t& t) 
 {
-    t.values.resize(t.keys.size());
-
-    for (unsigned i = 0; i < t.keys.size(); ++i) {
-        uint32_t k = t.keys[i];
-
-        if (k >= keys.size())
+    for (auto& e : t.entries) {
+        if (e.key >= keys.size())
             throw std::runtime_error(robotkernel::helpers::string_printf("unknown key_id %d for slave %s!", 
-                    k, name.c_str()));
+                    e.key, name.c_str()));
 
-        key_base* key = keys[k];
-        t.values[i] = key->get_value();
+        key_base* key = keys[e.key];
+        e.value = key->get_value();
     }
 }
 
@@ -250,19 +246,13 @@ inline void slave::key_value_read(
 inline void slave::key_value_write(
         const service_provider_key_value::key_value_transfer_t& t)
 {
-    if (t.values.size() != t.keys.size())
-        throw std::runtime_error(robotkernel::helpers::string_printf("write: key_value_transfer_t::values.size() "
-                "is %zu and ::keys.size() is %zu!", t.values.size(), t.keys.size()));
-
-    for (unsigned i = 0; i < t.keys.size(); ++i) {
-        uint32_t k = t.keys[i];
-
-        if (k >= keys.size())
+    for (auto& e : t.entries) {
+        if (e.key >= keys.size())
             throw std::runtime_error(robotkernel::helpers::string_printf("unknown key_id %d for slave %s!", 
-                    k, name.c_str()));
+                    e.key, name.c_str()));
 
-        key_base* key = keys[k];
-        key->set_value(t.values[i]);
+        key_base* key = keys[e.key];
+        key->set_value(e.value);
     }
 }
 
@@ -270,14 +260,9 @@ inline void slave::key_value_write(
 inline void slave::key_value_list(
         service_provider_key_value::key_value_transfer_t& t) 
 {
-    t.keys.resize(keys.size());
-    t.values.resize(keys.size());
-
-    for (unsigned i = 0; i < t.keys.size(); ++i) {
-        const key_base* key = keys[i];
-
-        t.keys[i] = i;
-        t.values[i] = key->name;
+    unsigned i = 0;
+    for (const auto& key : keys) {
+        t.entries.push_back({i++, key->name});
     }
 }
 

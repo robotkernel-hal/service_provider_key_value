@@ -1,6 +1,8 @@
-name: service_provider_key_value/write
-request:
-- vector/uint32_t: keys
-- vector/string: values
-response:
-- string: error_message
+datatypes:
+  - { name: service_provider_key_value/key_value, fields: [ { name: key, type: uint32_t }, { name: value, type: string } ] }
+services:
+  - name: service_provider_key_value/write
+    request:
+      - { name: entries, type: service_provider_key_value/key_value, array: true }
+    response:
+      - { name: error_message, type: string, default: "no error" }

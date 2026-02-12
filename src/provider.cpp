@@ -64,11 +64,11 @@ handler::~handler() {
  */
 void handler::svc_read(const struct svc_req_read& req, struct svc_resp_read& resp) {
     key_value_transfer_t t;
-    t.keys.assign(req.keys.begin(), req.keys.end());
-    
+    for (const auto& k : req.keys) { t.entries.push_back({ k, "" }); }
+
     try { 
         _instance->key_value_read(t);
-        resp.values.assign(t.values.begin(), t.values.end());
+        for (const auto& e : t.entries) { resp.values.push_back(e.value); }
     } catch (std::exception& e) {
         resp.error_message = e.what();
     }
@@ -81,10 +81,7 @@ void handler::svc_read(const struct svc_req_read& req, struct svc_resp_read& res
  */
 void handler::svc_write(const struct svc_req_write& req, struct svc_resp_write& resp) {
     key_value_transfer_t t;
-    t.keys.assign(req.keys.begin(), req.keys.end());
-    for (auto val : req.values) {
-        t.values.push_back((string)val);
-    }
+    for (const auto& e : req.entries) { t.entries.push_back({e.key, e.value}); }
     
     try { 
         _instance->key_value_write(t);
@@ -103,8 +100,8 @@ void handler::svc_list(const struct svc_req_list& req, struct svc_resp_list& res
     
     try { 
         _instance->key_value_list(t);
-        resp.keys.assign(t.keys.begin(), t.keys.end());
-        resp.names.assign(t.values.begin(), t.values.end());
+    
+        for (const auto& e : t.entries) { resp.entries.push_back({e.key, e.value}); }
     } catch (std::exception& e) {
         resp.error_message = e.what();
     }
@@ -121,18 +118,14 @@ void handler::svc_list_descriptions(const struct svc_req_list_descriptions& req,
     try { 
         _instance->key_value_list_descriptions(t);
 
-        resp.description.resize(t.size());
-        resp.unit.resize(t.size());
-        resp.default_value.resize(t.size());
-        resp.format.resize(t.size());
-        resp.read_only.resize(t.size());
-
         for (unsigned i = 0; i < t.size(); ++i) {
-            resp.description[i]   = t[i].description;
-            resp.unit[i]          = t[i].unit;
-            resp.default_value[i] = t[i].default_value;
-            resp.format[i]        = t[i].format;
-            resp.read_only[i]     = t[i].read_only;
+            resp.entries.push_back({
+                    i, 
+                    t[i].description,
+                    t[i].unit,
+                    t[i].default_value,
+                    t[i].format,
+                    t[i].read_only});
         }
     } catch (std::exception& e) {
         resp.error_message = e.what();

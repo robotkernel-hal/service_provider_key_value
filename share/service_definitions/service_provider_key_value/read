@@ -1,6 +1,7 @@
-name: service_provider_key_value/read
-request:
-- vector/uint32_t: keys
-response:
-- vector/string: values
-- string: error_message
+services:
+  - name: service_provider_key_value/read
+    request:
+      - { name: keys, type: uint32_t, array: true }
+    response:
+      - { name: values, type: string, array: true }
+      - { name: error_message, type: string, default: "no error" }

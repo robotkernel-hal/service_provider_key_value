@@ -34,8 +34,12 @@
 namespace service_provider_key_value {
 
 typedef struct key_value_transfer {
-    std::vector<uint32_t> keys;    
-    std::vector<std::string> values;
+    typedef struct {
+        uint32_t key;
+        std::string value;
+    } entry;
+
+    std::vector<entry> entries;    
 } key_value_transfer_t;
 
 typedef struct key_value_description {
