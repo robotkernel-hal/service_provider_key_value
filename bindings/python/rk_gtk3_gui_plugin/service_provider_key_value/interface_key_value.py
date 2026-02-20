@@ -67,17 +67,11 @@ class key_value_device(helpers.svc_wrapper):
         self.key_names = []
         self.n_hex_digits = 2
 
-        for key, name in zip(ret.keys, ret.names):
-            real_name = ""
-            if hasattr(name, "data"):
-                real_name = name.data
-            else:
-                real_name = name.string
+        for entry in ret.entries:
+            self.keys[int(entry.key)] = act_key = key_value_key(int(entry.key), entry.name)
 
-            self.keys[int(key)] = act_key = key_value_key(int(key), real_name)
-
-            self.key_names.append((int(key), real_name))
-            key_hex = "%x" % key
+            self.key_names.append((int(entry.key), entry.name))
+            key_hex = "%x" % entry.key
             if len(key_hex) > self.n_hex_digits:
                 self.n_hex_digits = len(key_hex)
         self.n_hex_digits = int(math.ceil(self.n_hex_digits / 2.)) * 2
@@ -85,24 +79,10 @@ class key_value_device(helpers.svc_wrapper):
     def list_descriptions(self):
         self.svc_list_descriptions.call()
         logger.debug("received descriptions: {!r}".format(self.svc_list_descriptions.resp))
-        ret = self.svc_list_descriptions.resp
 
-        self.key_descriptions = []
-
-        if not ret.description:
-            return # assume no descriptions
-
-        for field in ret.description:
-            if hasattr(field, "data"):
-                self.key_descriptions.append(field.data)
-            else:
-                self.key_descriptions.append(field.string)
-
-        for field in ret.unit:
-            if hasattr(field, "data"):
-                self.key_units.append(field.data)
-            else:
-                self.key_units.append(field.string)
+        for field in self.svc_list_descriptions.resp.entries:
+            self.key_descriptions.append(field.description)
+            self.key_units.append(field.unit)
 
     def read(self, keys):
         self.svc_read.req.keys = keys
@@ -114,16 +94,12 @@ class key_value_device(helpers.svc_wrapper):
         return values
 
     def write(self, key, value):
-        self.svc_write.req.keys = [key]
-        if hasattr(self.svc_write.req, "new_vector/string_packet"):
-            p = getattr(self.svc_write.req, "new_vector/string_packet")()
-            p.data = repr(value)
-            p.data_len = len(repr(value))
-        else:
-            p = getattr(self.svc_write.req, "new_string_packet")()
-            p.string = repr(value)
-            p.string_len = len(repr(value))
-        self.svc_write.req.values = [p]
+        self.svc_write.req.entries = [] # list of key_value
+        entries_item = self.svc_write.req.new_key_value_packet()
+        entries_item.key = key # uint32_t
+        entries_item.value = repr(value) # char
+        self.svc_write.req.entries.append(entries_item)
+
         logger.debug("for key = {!r}, writing values = {!r}".format(key, value))
         self.svc_write.call()
 

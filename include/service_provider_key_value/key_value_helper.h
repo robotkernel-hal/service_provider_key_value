@@ -47,7 +47,7 @@ class key_base
         std::string name;
         bool after_change_cb;
 
-        service_provider_key_value::key_value_description_t description; // if contents are set, they will be free()'d from this detor!
+        service_provider_key_value::key_value_description_t description = {}; // if contents are set, they will be free()'d from this detor!
 
         key_base(slave* parent, std::string name, bool after_change_cb) 
             : parent(parent), name(name), after_change_cb(after_change_cb) {
@@ -270,11 +270,8 @@ inline void slave::key_value_list(
 inline void slave::key_value_list_descriptions(
         std::vector<service_provider_key_value::key_value_description_t>& data) 
 {
-    data.resize(keys.size());
-
-    for (unsigned i = 0; i < keys.size(); ++i) {
-        const key_base* key = keys[i];
-        data[i] = key->description;
+    for (const auto& key : keys) {
+        data.push_back(key->description);
     }
 }
 
