@@ -270,7 +270,11 @@ inline void slave::key_value_list(
 inline void slave::key_value_list_descriptions(
         std::vector<service_provider_key_value::key_value_description_t>& data) 
 {
+    printf("KEY_VALUE_LIST\n");
+    printf("GOT %d keys\n", keys.size());
+
     for (const auto& key : keys) {
+        printf("ONE STEP\n");
         data.push_back(key->description);
     }
 }

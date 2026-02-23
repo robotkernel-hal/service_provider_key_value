@@ -1,14 +1,14 @@
 datatypes:
-  - name: service_provider_key_value/description
+  service_provider_key_value/description:
     fields:  
-      - { name: key, type: uint32_t }
-      - { name: description, type: string }
-      - { name: unit, type: string }
-      - { name: default_value, type: string }
-      - { name: format, type: string }
-      - { name: read_only, type: uint8_t }
+      key: { type: uint32_t }
+      description: { type: string }
+      unit: { type: string }
+      default_value: { type: string }
+      format: { type: string }
+      read_only: { type: uint8_t }
 services:
-  - name: service_provider_key_value/list_descriptions
+  service_provider_key_value/list_descriptions:
     response:
-      - { name: entries, type: service_provider_key_value/description, array: true }
-      - { name: error_message, type: string, default: "no error" }
+      entries: { type: service_provider_key_value/description, array: true }
+      error_message: { type: string, default: "no error" }

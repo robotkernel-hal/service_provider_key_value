@@ -1,7 +1,10 @@
 datatypes:
-  - { name: service_provider_key_value/key_name, fields: [ { name: key, type: uint32_t }, { name: name, type: string } ] }
+  service_provider_key_value/key_name: 
+    fields: 
+      key: { type: uint32_t }
+      name: { type: string }
 services:
-  - name: service_provider_key_value/list
+  service_provider_key_value/list:
     response:
-      - { name: entries, type: service_provider_key_value/key_name, array: true }
-      - { name: error_message, type: string, default: "no error" }
+      entries: { type: service_provider_key_value/key_name, array: true }
+      error_message: { type: string, default: "no error" }
