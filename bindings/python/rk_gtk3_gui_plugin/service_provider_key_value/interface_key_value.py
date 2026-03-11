@@ -526,7 +526,7 @@ class interface_key_value(helpers.service_provider_view, helpers.builder_base):
             conv = self.active_conversions.get(unit)
             if conv is not None:
                 B, C = conv
-                conv = lambda b: b // C
+                conv = lambda b: b / C
 
         try:
             if format[0].startswith("hex"):
