@@ -1,11 +1,8 @@
 #!/usr/bin/python
 
-from __future__ import print_function
-from __future__ import division
 from builtins import zip
 from builtins import str
 from builtins import map
-from past.utils import old_div
 from builtins import object
 import os
 import sys
@@ -505,7 +502,7 @@ class interface_key_value(helpers.service_provider_view, helpers.builder_base):
             conv = self.active_conversions.get(unit)
             if conv is not None:
                 B, C = conv
-                conv = lambda b: old_div(b, C)
+                conv = lambda b: b / C
 
         try:
             if format[0].startswith("hex"):
